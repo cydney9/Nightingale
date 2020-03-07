@@ -1,0 +1,1 @@
+{"Scene":{"0":{"Camera":{"FarPlane":100.0,"Fov":0.0,"NearPlane":-100.0,"OrthoPos":[-100.0,100.0,-100.0,100.0],"OrthoSize":[-100.0,100.0,-100.0,100.0],"Position":[0.0,0.0,0.0],"ProjectionType":1,"Rotation":[0.0,0.0,0.0]},"Identifier":{"Identifier":1,"MainCamera":true,"MainPlayer":false,"Name":"Main Camera"}},"NumEntities":1,"SceneName":"second Loaded Scenedsa"}}

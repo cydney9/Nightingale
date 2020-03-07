@@ -1,0 +1,18 @@
+{
+  "B_L": {
+    "Frame0": [ 0.0   , 100.0,  100.0, 0.0 ],
+    "Frame1": [ 100.0 , 100.0,  200.0, 0.0 ],
+    "Frame2": [ 200.0 , 100.0,  300.0, 0.0 ],
+    "NumFrames": 3,
+    "Repeating": false,
+    "SecsPerFrame": 0.2
+  },
+  "B_R": {
+    "Frame0": [ 100.0, 100.0, 0.0, 0.0 ],
+    "Frame1": [ 200.0, 100.0, 100.0, 0.0 ],
+    "Frame2": [ 300.0, 100.0, 200.0, 0.0 ],
+    "NumFrames": 3,
+    "Repeating": false,
+    "SecsPerFrame": 0.2
+  }
+}

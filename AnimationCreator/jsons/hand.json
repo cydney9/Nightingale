@@ -1,0 +1,14 @@
+{
+  "HandLeft": {
+    "Frame0": [ 800.0, 400.0, 0.0, 0.0 ],
+    "NumFrames": 1,
+    "Repeating": false,
+    "SecsPerFrame": 1.0
+  },
+  "HandRight": {
+    
+    "Frame0": [ 0.0, 400.0, 800.0, 0.0 ],
+    "NumFrames": 1,
+    "Repeating": false,
+    "SecsPerFrame": 1.0
+  }}
