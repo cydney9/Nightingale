@@ -20,19 +20,27 @@ void Player::CreatePlayer(b2World& phyworld, int x, int y)
 	//Adds first animation
 	animController.AddAnimation(player_json["standRight"]);
 	animController.AddAnimation(player_json["standLeft"]);
+
 	animController.AddAnimation(player_json["walkRight"]);
 	animController.AddAnimation(player_json["walkLeft"]);
+
 	animController.AddAnimation(player_json["flyRight"]);
 	animController.AddAnimation(player_json["flyLeft"]);
+
 	animController.AddAnimation(player_json["dashRight"]);
 	animController.AddAnimation(player_json["dashLeft"]);
+
 	animController.AddAnimation(player_json["attackRight1"]);
 	animController.AddAnimation(player_json["attackLeft1"]);
+
 	animController.AddAnimation(player_json["attackRight2"]);
 	animController.AddAnimation(player_json["attackLeft2"]);
+
 	animController.AddAnimation(player_json["attackRight3"]);
 	animController.AddAnimation(player_json["attackLeft3"]);
 
+	animController.AddAnimation(player_json["dashRight"]);
+	animController.AddAnimation(player_json["dashLeft"]);
 	auto& tempSpr = ECS::GetComponent<Sprite>(entity);
 	auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
 	//Physics body covers the entire sprite

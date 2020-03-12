@@ -31,7 +31,7 @@ void PlayerActionController::Jump(b2Body* body)
 
 void PlayerActionController::FlyUp(b2Body* body)
 {
-	body->ApplyForce(b2Vec2(0, 90000), body->GetWorldCenter(), false);
+	body->ApplyForce(b2Vec2(0, 90000), body->GetWorldCenter(), true);
 
 	if (body->GetLinearVelocity().y > 5) {
 		body->SetLinearVelocity(b2Vec2(body->GetLinearVelocity().x, 5));
@@ -40,7 +40,7 @@ void PlayerActionController::FlyUp(b2Body* body)
 
 void PlayerActionController::FlyDown(b2Body* body)
 {
-	body->ApplyForce(b2Vec2(0, -50000), body->GetWorldCenter(), false);
+	body->ApplyForce(b2Vec2(0, -50000), body->GetWorldCenter(), true);
 
 	if (body->GetLinearVelocity().y < -5) {
 		body->SetLinearVelocity(b2Vec2(body->GetLinearVelocity().x, -5));
@@ -50,7 +50,7 @@ void PlayerActionController::FlyDown(b2Body* body)
 
 void PlayerActionController::FlyLeft(b2Body* body)
 {
-	body->ApplyForce(b2Vec2(-32000, 0), body->GetWorldCenter(), false);
+	body->ApplyForce(b2Vec2(-32000, 0), body->GetWorldCenter(), true);
 
 	if (body->GetLinearVelocity().x < -15) {
 		body->SetLinearVelocity(b2Vec2(-15, body->GetLinearVelocity().y));
@@ -59,7 +59,7 @@ void PlayerActionController::FlyLeft(b2Body* body)
 
 void PlayerActionController::FlyRight(b2Body* body)
 {
-	body->ApplyForce(b2Vec2(32000, 0), body->GetWorldCenter(), false);
+	body->ApplyForce(b2Vec2(32000, 0), body->GetWorldCenter(), true);
 
 	if (body->GetLinearVelocity().x > 15) {
 		body->SetLinearVelocity(b2Vec2(15, body->GetLinearVelocity().y));
@@ -312,4 +312,49 @@ float PlayerActionController::EnemySide(int LOR)// -1 = left, 1 = right
 		return LOR;
 	}
 }
+
+void PlayerActionController::Dash(int LOR)
+{
+	if (CanDash == true) {
+		CanDash = false;
+		IsDashing = true;
+		Dashside = LOR;
+	}
+}
+
+void PlayerActionController::DashUpdate(b2Body* body)
+{
+	if (DashTimer<0) {
+		DashTimer = 0.28;
+		IsDashing = false;
+	}
+
+	if (IsDashing == true) {
+		body->SetLinearVelocity(b2Vec2(50* Dashside, 0));
+		DashTimer -= Timer::deltaTime;
+	}
+	if (IsDashing == false && CanDash == false && DashCoolDown>0) {
+		DashCoolDown-= Timer::deltaTime;
+	}
+	else if (DashCoolDown < 0) {
+		DashCoolDown = 1;
+		CanDash = true;
+	}
+
+}
+
+bool PlayerActionController::IsDash()
+{
+	if (DashTimer < 0.279999999) {
+		return true;
+	}
+	return false;
+}
+
+int PlayerActionController::DashingSide()
+{
+	return Dashside;
+}
+
+
 

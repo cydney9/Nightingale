@@ -9,6 +9,15 @@ static float Combo1Timer = 0.72;
 static float Combo2Timer = 0.40;
 static float Combo3Timer = 0.48;
 
+static float DashTimer = 0.28;
+static float DashCoolDown = 1;
+
+static bool IsDashing = false;
+
+static bool CanDash = true;
+
+static int Dashside;
+
 static bool wantNextCombo = false;
 
 static int PlayingCombo = 0;
@@ -54,5 +63,13 @@ public:
 	static float AttackAngleCheck(unsigned int entity);
 
 	static float EnemySide(int LOR);
+
+	static void Dash(int LOR);
+
+	static void DashUpdate(b2Body* body);
+
+	static bool IsDash();
+
+	static int DashingSide();
 };
 

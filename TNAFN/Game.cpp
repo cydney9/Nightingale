@@ -184,6 +184,7 @@ void Game::CheckEvents()
 	b2Vec2 vel = b2Vec2(body->GetLinearVelocity());
 	PlayerActionController::Charge(body,LOR);
 
+	PlayerActionController::DashUpdate(body);
 
 	MouseMotion(BackEnd::GetMotionEvent());
 
@@ -340,7 +341,7 @@ void Game::KeyboardDown()
 			IsFlying = true;
 		}
 		if (Input::GetKeyDown(Key::Shift)) {
-			body->ApplyLinearImpulse(b2Vec2(1000, 0), body->GetWorldCenter(), true);
+			PlayerActionController::Dash(LOR);
 		}
 	}
 
@@ -404,7 +405,14 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 
 	auto& PlayerAnim = ECS::GetComponent<AnimationController>(EntityIdentifier::MainPlayer());
 	auto& HandAnum = ECS::GetComponent<AnimationController>(EntityIdentifier::WeaponHand());
-	if (PlayerActionController::getPlayingCombo() != 0) {
+	if (PlayerActionController::IsDash()) {
+		if (PlayerActionController::DashingSide() == 1) {
+			AnimNum = 14;
+		}
+		else {
+			AnimNum = 15;
+		}
+	}else if (PlayerActionController::getPlayingCombo() != 0) {
 		HandAnum.SetActiveAnim(2);
 		if (PlayerActionController::getPlayingCombo() == 1) {
 			if (PlayerActionController::EnemySide(LOR) == 1) {
@@ -423,11 +431,11 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 			}
 		}
 		else if (PlayerActionController::getPlayingCombo() == 3) {
-			if (PlayerActionController::EnemySide(LOR) == 1) {
-				AnimNum = 12;
+			if (PlayerActionController::EnemySide(LOR) == -1) {
+				AnimNum = 13;
 			}
 			else {
-				AnimNum = 13;
+				AnimNum = 12;
 			}
 		}
 	}
