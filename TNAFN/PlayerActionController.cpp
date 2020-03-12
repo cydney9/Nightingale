@@ -326,6 +326,7 @@ void PlayerActionController::DashUpdate(b2Body* body)
 {
 	if (DashTimer<0) {
 		DashTimer = 0.28;
+		body->SetLinearVelocity(b2Vec2(3* Dashside, 0));
 		IsDashing = false;
 	}
 

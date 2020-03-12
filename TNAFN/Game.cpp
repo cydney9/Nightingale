@@ -269,7 +269,7 @@ void Game::KeyboardHold()
 	b2Vec2 vel = b2Vec2(body->GetLinearVelocity());
 	float desireVel = body->GetLinearVelocity().x;
 
-	if (PlayerActionController::IsCombo() == false) {
+	if (PlayerActionController::IsCombo() == false&& PlayerActionController::IsDash()==false) {
 		if (Input::GetKey(Key::A) && IsFlying == false) {
 			PlayerActionController::walkLeft(body, vel, desireVel);
 		}
@@ -332,7 +332,7 @@ void Game::KeyboardDown()
 
 	auto body = ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetBody();
 	b2Vec2 LinearVelocity = b2Vec2(body->GetLinearVelocity());
-	if (PlayerActionController::IsCombo() == false) {
+	if (PlayerActionController::IsCombo() == false && PlayerActionController::IsDash() == false) {
 		if (Input::GetKeyDown(Key::Space) && ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetIsGrounded() == true) {
 			PlayerActionController::Jump(body);
 
@@ -351,7 +351,7 @@ void Game::KeyboardUp()
 {
 	auto body = ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetBody();
 	m_activeScene->KeyboardUp();
-	if (PlayerActionController::IsCombo()==false) {
+	if (PlayerActionController::IsCombo()==false && PlayerActionController::IsDash() == false) {
 		if (Input::GetKeyUp(Key::Space) && IsFlying == true) {
 			IsFlying = false;
 		}
@@ -406,6 +406,7 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 	auto& PlayerAnim = ECS::GetComponent<AnimationController>(EntityIdentifier::MainPlayer());
 	auto& HandAnum = ECS::GetComponent<AnimationController>(EntityIdentifier::WeaponHand());
 	if (PlayerActionController::IsDash()) {
+		HandAnum.SetActiveAnim(2);
 		if (PlayerActionController::DashingSide() == 1) {
 			AnimNum = 14;
 		}
@@ -494,7 +495,7 @@ clickedPoint = clickedPoint + vec2(tempCam.GetPositionX(), tempCam.GetPositionY(
 
 void Game::MouseClick(SDL_MouseButtonEvent evnt)
 {
-	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT) && PlayerActionController::IsDash() == false) {
 		PlayerActionController::Shoot(m_activeScene, handangle);
 		Camera tempCam = ECS::GetComponent<Camera>(EntityIdentifier::MainCamera());
 		vec2 windowSpace = vec2(float(BackEnd::GetWindowWidth()), float(BackEnd::GetWindowHeight()));
@@ -515,7 +516,7 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 
 	auto body = ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetBody();
 
-	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT) && PlayerActionController::IsDash() == false) {
 		PlayerActionController::UpdateAttack();
 
 		/*printf("b2Vec2 WallPos[] = {");
