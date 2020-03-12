@@ -1,6 +1,5 @@
 #pragma once
 #include "ECS.h"
-#include "EntityList.h"
 class Bullet {
 public:
 	Bullet() {}

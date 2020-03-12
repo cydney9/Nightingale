@@ -29,7 +29,7 @@ vec3 PhysicsBody::m_gravityAcceleration = vec3(0.f, -35.f, 0.f);
 bool PhysicsBody::m_drawBodies = false;
 
 
-PhysicsBody::PhysicsBody(b2Body* body, float radius, vec2 centerOffset, bool isDynamic)
+PhysicsBody::PhysicsBody(b2Body* body, float radius, vec2 centerOffset, bool isDynamic, uint16 category, uint16 mask)
 {
 	//Bodies don't reference a shape by themselves
 	//they need a shape that has been linked to a fixture
@@ -43,6 +43,8 @@ PhysicsBody::PhysicsBody(b2Body* body, float radius, vec2 centerOffset, bool isD
 	tempFixture.shape = &tempShape;
 	tempFixture.density = 1.f;
 	tempFixture.friction = 0.3f;
+	tempFixture.filter.categoryBits = category;
+	tempFixture.filter.maskBits = mask;
 
 	m_body = body;
 	m_body->CreateFixture(&tempFixture);
@@ -67,7 +69,7 @@ PhysicsBody::PhysicsBody(b2Body* body, float radius, vec2 centerOffset, bool isD
 	InitBody();
 }
 
-PhysicsBody::PhysicsBody(b2Body* body, float width, float height, vec2 centerOffset, bool isDynamic)
+PhysicsBody::PhysicsBody(b2Body* body, float width, float height, vec2 centerOffset, bool isDynamic, uint16 category, uint16 mask)
 {
 	//Bodies don't reference a shape by themselves
 	//they need a shape that has been linked to a fixture
@@ -81,6 +83,8 @@ PhysicsBody::PhysicsBody(b2Body* body, float width, float height, vec2 centerOff
 	tempFixture.shape = &tempShape;
 	tempFixture.density = 1.f;
 	tempFixture.friction = 0.3f;
+	tempFixture.filter.categoryBits = category;
+	tempFixture.filter.maskBits = mask;
 
 	m_body = body;
 	m_body->CreateFixture(&tempFixture);
@@ -103,7 +107,7 @@ PhysicsBody::PhysicsBody(b2Body* body, float width, float height, vec2 centerOff
 }
 
 
-PhysicsBody::PhysicsBody(b2Body* body,b2Vec2 pos[],int size,bool isDynamic)
+PhysicsBody::PhysicsBody(b2Body* body,b2Vec2 pos[],int size,bool isDynamic, uint16 category, uint16 mask)
 {
 	//Bodies don't reference a shape by themselves
 	//they need a shape that has been linked to a fixture
@@ -115,6 +119,8 @@ PhysicsBody::PhysicsBody(b2Body* body,b2Vec2 pos[],int size,bool isDynamic)
 	tempFixture.shape = &tempShape;
 	tempFixture.density = 1.f;
 	tempFixture.friction = 0.3f;
+	tempFixture.filter.categoryBits = category;
+	tempFixture.filter.maskBits = mask;
 
 	m_body = body;
 	m_body->CreateFixture(&tempFixture);

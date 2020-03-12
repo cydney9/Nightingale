@@ -222,7 +222,6 @@
     <ClInclude Include="EffectManager.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EntityIdentifier.h" />
-    <ClInclude Include="EntityList.h" />
     <ClInclude Include="Framebuffer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GrainEffect.h" />

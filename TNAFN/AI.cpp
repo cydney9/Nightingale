@@ -1,5 +1,7 @@
 #include "AI.h"
 
+#include <ctime>
+#include <chrono>
 
 
 std::chrono::steady_clock sc;
@@ -26,23 +28,23 @@ void AI::WalkToPlayer()
 	if (EnemyX > PlayerX - 150 && EnemyX < PlayerX + 150) {
 		if (AItype == 0) {
 			if (PlayerX > EnemyX) {
-				desireVel = b2Max(vel.x + 2.5f, 20.f);
+				desireVel = b2Max(vel.x + 0.1f, 50.f);
 				EnemyAnimation.SetActiveAnim(1);
 			}
 			else {
-				desireVel = b2Min(vel.x - 2.5f, -20.f);
+				desireVel = b2Min(vel.x - 0.1f, -50.f);
 				EnemyAnimation.SetActiveAnim(0);
 			}
 		}
 		float velChange = desireVel - vel.x;
 		float impulse = EBody.GetBody()->GetMass() * velChange;
-		EBody.GetBody()->ApplyLinearImpulse(b2Vec2(impulse, 0), EBody.GetBody()->GetWorldCenter(), true);
+		EBody.GetBody()->ApplyForce(b2Vec2(impulse, 0), EBody.GetBody()->GetWorldCenter(), true);
 
-		if (EBody.GetBody()->GetLinearVelocity().x < 100.f && EBody.GetBody()->GetLinearVelocity().x > -100.f&&EBody.GetIsGrounded()) {
+		if (EBody.GetBody()->GetLinearVelocity().x < 3.f && EBody.GetBody()->GetLinearVelocity().x > -3.f&&EBody.GetIsGrounded()) {
 			currenttime = sc.now();
 			auto time_span = static_cast<std::chrono::duration<double>>(currenttime - starttime);
 			if ((double)time_span.count() > 3) {
-				EBody.GetBody()->ApplyLinearImpulse(b2Vec2(0, 96000), EBody.GetBody()->GetWorldCenter(), true);
+				EBody.GetBody()->ApplyForce(b2Vec2(0, 3), EBody.GetBody()->GetWorldCenter(), true);
 				starttime = sc.now();
 			}
 		}

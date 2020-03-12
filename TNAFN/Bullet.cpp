@@ -1,6 +1,7 @@
 #include "Bullet.h"
 #include<iostream>
 #include<string>
+#include "ContactList.h"
 using namespace std;
 void Bullet::CreateBullet(b2World& phyworld, float x, float y,float angle)
 {
@@ -38,7 +39,7 @@ void Bullet::CreateBullet(b2World& phyworld, float x, float y,float angle)
 	tempDef.position.Set(float32(x), float32(y));
 	tempBody = phyworld.CreateBody(&tempDef);
 	tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth()), float(tempSpr.GetHeight() ),
-		vec2(0.f, 0.f), false);
+		vec2(0.f, 0.f), false, CollisionIDs::Bullet(), CollisionIDs::Enemy());
 	tempPhsBody.GetBody()->SetLinearVelocity(b2Vec2(12000* (cos(angle)),12000* sin(angle )));
 	tempPhsBody.SetMaxVelo(12000);
 	tempPhsBody.GetBody()->SetTransform(tempPhsBody.GetBody()->GetPosition(), angle + Transform::ToRadians(180.f));
@@ -47,6 +48,7 @@ void Bullet::CreateBullet(b2World& phyworld, float x, float y,float angle)
 	unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
 	ECS::SetUpIdentifier(entity, bitHolder, "Bullet");
 	ECS::SetIsBullet(entity, true);
+	ContactList::AddToList(entity);
 	AddToBulletlist(entity);
 }
 
@@ -87,6 +89,7 @@ void Bullet::update(entt::registry* reg)
 {
 	for (int x(0); x < Bulletlist.size(); x++) {
 		if (DeleteCheck(Bulletlist[x])) {
+			ContactList::RemoveFromList(Bulletlist[x]);
 			ECS::DestroyEntity(Bulletlist[x]);
 			Bulletlist.erase(Bulletlist.begin() + x, Bulletlist.begin() + x + 1);
 			continue;

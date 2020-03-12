@@ -41,7 +41,7 @@ void Enemy::CreateEnemy(b2World& phyworld, int x, int y, int type)
 	tempDef.fixedRotation = true;
 	tempBody = phyworld.CreateBody(&tempDef);
 	tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight() - 10),
-		vec2(0.f, -5.f), true);
+		vec2(0.f, -5.f), true, CollisionIDs::Enemy(), CollisionIDs::Bullet()| CollisionIDs::Player()| CollisionIDs::Enemy()| CollisionIDs::Enviroment());
 	tempPhsBody.SetFriction(0.15);
 
 	AIController = AI(entity, type);
@@ -63,6 +63,53 @@ void Enemy::CreateEnemy(b2World& phyworld, int x, int y, int type)
 	ECS::SetUpIdentifier(entity, bitHolder, "Enemy");
 	//ECS::SetIsEnemy(entity, true);
 	
+	Enemy::AddToEnemylist(entity);
 	ContactList::AddToList(entity);
-	EntityList::AddToList(entity);
 }
+
+void Enemy::AddToEnemylist(unsigned int entity)
+{
+	EnemyList.push_back(entity);
+}
+
+void Enemy::RemoveFromEnemylist(unsigned int entity)
+{
+	for (int x(0); x < EnemyList.size(); x++) {
+		if (EnemyList[x] == entity) {
+			EnemyList.erase(EnemyList.begin() + x, EnemyList.begin() + x + 1);
+			break;
+		}
+	}
+}
+
+bool Enemy::DeleteCheck(unsigned int entity)
+{
+	/*auto& BulletphysicsBod = ECS::GetComponent<PhysicsBody>(entity);
+
+	float PlayerX = ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()).GetPositionX();
+	float PlayerY = ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()).GetPositionY();
+	float BulletX = BulletphysicsBod.GetBody()->GetPosition().x;
+	float BulletY = BulletphysicsBod.GetBody()->GetPosition().y;
+	if (BulletX > PlayerX + 200 || BulletX < PlayerX - 200 || BulletY > PlayerY + 200 || BulletY < PlayerY - 200) {
+		return true;
+	}
+	else {
+		return false;
+	}*/
+
+	return false;
+}
+
+void Enemy::update(entt::registry* reg)
+{
+	for (int x(0); x < EnemyList.size(); x++) {
+		if (DeleteCheck(EnemyList[x])) {
+			ContactList::RemoveFromList(EnemyList[x]);
+			ECS::DestroyEntity(EnemyList[x]);
+			EnemyList.erase(EnemyList.begin() + x, EnemyList.begin() + x + 1);
+			continue;
+		}
+	}
+}
+
+

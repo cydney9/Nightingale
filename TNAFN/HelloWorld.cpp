@@ -136,7 +136,7 @@ b2Vec2(-749, 334) };
 HelloWorld::HelloWorld(std::string name)
 	:Scene (name)
 {
-	m_gravity = b2Vec2(float32(0.f), float32(-9.8*32));
+	m_gravity = b2Vec2(float32(0.f), float32(-9.8));
 	m_physicsWorld->SetGravity(m_gravity);
 	m_physicsWorld->SetContactListener(&listener);
 }
@@ -240,7 +240,7 @@ void HelloWorld::InitScene(float windowWidth, float windowHeight)
 		tempDef.position.Set(float32(0.f), float32(0.f));
 		tempDef.fixedRotation = true;
 		tempBody = m_physicsWorld->CreateBody(&tempDef);
-		tempPhsBody = PhysicsBody(tempBody ,&WallPos[0],131,false);
+		tempPhsBody = PhysicsBody(tempBody ,&WallPos[0],131,false,  CollisionIDs::Enviroment(), CollisionIDs::Enemy()| CollisionIDs::Player());
 		tempPhsBody.SetFriction(0.8);
 		//Sets up the identifier
 		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::PhysicsBit();

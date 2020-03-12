@@ -22,6 +22,7 @@ WeaponHand::WeaponHand(int x, int y,int z)
 	//Adds first animation
 	animController.AddAnimation(Hand["HandRight"]);
 	animController.AddAnimation(Hand["HandLeft"]);
+	animController.AddAnimation(Hand["Attacking"]);
 	ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 55, 35, true, &animController);
 
 	ECS::GetComponent<Transform>(entity).SetPosition(vec3(x,y,z));

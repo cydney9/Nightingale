@@ -359,9 +359,6 @@
     <ClInclude Include="Bullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EntityList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerActionController.h">
       <Filter>Header Files</Filter>
     </ClInclude>

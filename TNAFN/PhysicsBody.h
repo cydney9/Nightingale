@@ -43,10 +43,10 @@ class PhysicsBody {
 public:
 	PhysicsBody() {}
 	//Constructs a circle collider
-	PhysicsBody(b2Body* body, float radius, vec2 centerOffset, bool isDynamic);
+	PhysicsBody(b2Body* body, float radius, vec2 centerOffset, bool isDynamic, uint16 category, uint16 mask);
 	//Constructs a box collider
-	PhysicsBody(b2Body* body, float width, float height, vec2 centerOffset, bool isDynamic);
-	PhysicsBody(b2Body* body, b2Vec2 pos[], int size,bool isDynamic);
+	PhysicsBody(b2Body* body, float width, float height, vec2 centerOffset, bool isDynamic, uint16 category, uint16 mask);
+	PhysicsBody(b2Body* body, b2Vec2 pos[], int size,bool isDynamic, uint16 category, uint16 mask);
 	//Update physics stuffs
 	void Update(Transform* trans);
 

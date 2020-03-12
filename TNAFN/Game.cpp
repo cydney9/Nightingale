@@ -5,18 +5,9 @@
 #include "vector"
 #include "GPCSound.h"
 
-#include <chrono>
-#include <ctime>
 #include "PlayerActionController.h"
 
-
-
 //value use for combo
-bool IsCombo=false;
-static std::vector<string> ComboBuffer;
-
-
-
 
 int ClickCounter = 0;
 
@@ -26,7 +17,7 @@ bool IsFlying = false;
 
 //Left(-1) or Right(1)
 int LOR = -1;
-
+ 
 int AnimNum = 0;
 
 float handangle = 0;
@@ -144,7 +135,9 @@ void Game::Update()
 	BackEnd::Update(m_register);
 
 	//Update Physics System
-	PhysicsSystem::Update(m_register, m_activeScene->GetPhysicsWorld());
+	for (size_t i = 0; i < static_cast<size_t>(500 * Timer::deltaTime); i++){
+		PhysicsSystem::Update(m_register, m_activeScene->GetPhysicsWorld());
+	}
 }
 
 void Game::GUI()
@@ -165,13 +158,34 @@ void Game::GUI()
 
 void Game::CheckEvents()
 {
+	PlayerActionController::CBTimer();
+
 	if (m_close)
 		m_window->Close();
 
-	MouseMotion(BackEnd::GetMotionEvent());
-
 	if (m_click)
 		MouseClick(BackEnd::GetClickEvent());
+
+	auto body = ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetBody();
+
+	if (PlayerActionController::ComboCheck()) {
+		IsFlying = false;
+		int currentAnim=m_register->get<AnimationController>(EntityIdentifier::MainPlayer()).GetActiveAnim();
+		ECS::GetComponent<AnimationController>(EntityIdentifier::MainPlayer()).GetAnimation(currentAnim).Reset();
+	}
+
+	if(IsFlying==false){
+		body->SetGravityScale(1);
+	}
+	else {
+		body->SetGravityScale(0.5);
+
+	}
+	b2Vec2 vel = b2Vec2(body->GetLinearVelocity());
+	PlayerActionController::Charge(body,LOR);
+
+
+	MouseMotion(BackEnd::GetMotionEvent());
 
 	if (m_wheel)
 		MouseWheel(BackEnd::GetWheelEvent());
@@ -254,14 +268,32 @@ void Game::KeyboardHold()
 	b2Vec2 vel = b2Vec2(body->GetLinearVelocity());
 	float desireVel = body->GetLinearVelocity().x;
 
-	if (Input::GetKey(Key::A) && IsFlying == false) {
-		PlayerActionController::walkLeft();
-	}
-	if (Input::GetKey(Key::D) && IsFlying == false) {
-		PlayerActionController::walkRight();
-	}
+	if (PlayerActionController::IsCombo() == false) {
+		if (Input::GetKey(Key::A) && IsFlying == false) {
+			PlayerActionController::walkLeft(body, vel, desireVel);
+		}
+		if (Input::GetKey(Key::D) && IsFlying == false) {
+			PlayerActionController::walkRight(body, vel, desireVel);
+		}
 
+		//Flying mode
 
+		if (Input::GetKey(Key::Space) && IsFlying == true) {
+			if (Input::GetKey(Key::W)) {
+				PlayerActionController::FlyUp(body);
+			}
+			if (Input::GetKey(Key::S)) {
+				PlayerActionController::FlyDown(body);
+			}
+			if (Input::GetKey(Key::A)) {
+				PlayerActionController::FlyLeft(body);
+			}
+			if (Input::GetKey(Key::D)) {
+				PlayerActionController::FlyRight(body);
+			}
+
+		}
+	}
 	/*
 	if (Input::GetKey(Key::A) && IsFlying == false) {
 		body->SetLinearVelocity(b2Vec2(-40, body->GetLinearVelocity().y));
@@ -277,25 +309,6 @@ void Game::KeyboardHold()
 		body->SetLinearVelocity(b2Vec2(body->GetLinearVelocity().x, -40));
 	}
 	*/
-
-
-	//Flying mode
-
-	if (Input::GetKey(Key::Space)&&IsFlying == true) {
-		if (Input::GetKey(Key::W)) {
-			PlayerActionController::FlyUp();
-		}		
-		if (Input::GetKey(Key::S)) {
-			PlayerActionController::FlyDown();
-		}		
-		if (Input::GetKey(Key::A)) {
-			PlayerActionController::FlyLeft();
-		}		
-		if (Input::GetKey(Key::D)) {
-			PlayerActionController::FlyRight();
-		}
-
-	}
 
 	if (Input::GetKey(Key::O)) {    //zoom in
 		m_register->get<Camera>(EntityIdentifier::MainCamera()).Zoom(1);
@@ -318,23 +331,30 @@ void Game::KeyboardDown()
 
 	auto body = ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetBody();
 	b2Vec2 LinearVelocity = b2Vec2(body->GetLinearVelocity());
-	if (Input::GetKeyDown(Key::Space)&& ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetIsGrounded()==true) {
-		body->ApplyForce(b2Vec2(0, 9600000), body->GetWorldCenter(), true);
+	if (PlayerActionController::IsCombo() == false) {
+		if (Input::GetKeyDown(Key::Space) && ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetIsGrounded() == true) {
+			PlayerActionController::Jump(body);
 
-	}else if (Input::GetKeyDown(Key::Space) && ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetIsGrounded() == false) {
-		body->SetGravityScale(0.05);
-		IsFlying = true;
+		}
+		else if (Input::GetKeyDown(Key::Space) && ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetIsGrounded() == false) {
+			IsFlying = true;
+		}
+		if (Input::GetKeyDown(Key::Shift)) {
+			body->ApplyLinearImpulse(b2Vec2(1000, 0), body->GetWorldCenter(), true);
+		}
 	}
-	if (Input::GetKeyDown(Key::Shift)) {
-		body->ApplyLinearImpulse(b2Vec2(10000000000000000000, 0), body->GetWorldCenter(), true);
-	}
-
 
 }
 
 void Game::KeyboardUp()
 {
 	auto body = ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetBody();
+	m_activeScene->KeyboardUp();
+	if (PlayerActionController::IsCombo()==false) {
+		if (Input::GetKeyUp(Key::Space) && IsFlying == true) {
+			IsFlying = false;
+		}
+	}
 	/*
 	if (Input::GetKeyUp(Key::A) && IsFlying == false) {
 		body->SetLinearVelocity(b2Vec2(0, 0));
@@ -351,7 +371,8 @@ void Game::KeyboardUp()
 	}
 	*/
 	//Keyboard button up
-	m_activeScene->KeyboardUp();
+
+
 
 	if (Input::GetKeyUp(Key::F1))
 	{
@@ -364,10 +385,7 @@ void Game::KeyboardUp()
 	if (Input::GetKeyUp(Key::F4)) {
 		printf("F4 Key Released\n");
 	}
-	if (Input::GetKeyUp(Key::Space)&& IsFlying == true) {
-		IsFlying = false;
-		body->SetGravityScale(1);
-	}
+
 	if (Input::GetKeyUp(Key::P)) {
 		PhysicsBody::SetDraw(!PhysicsBody::GetDraw());
 	}
@@ -386,31 +404,63 @@ void Game::MouseMotion(SDL_MouseMotionEvent evnt)
 
 	auto& PlayerAnim = ECS::GetComponent<AnimationController>(EntityIdentifier::MainPlayer());
 	auto& HandAnum = ECS::GetComponent<AnimationController>(EntityIdentifier::WeaponHand());
-	if (handangle + Transform::ToRadians(180.f)>= PI/2&& handangle + Transform::ToRadians(180.f)<= (3*PI)/2) {
-		HandAnum.SetActiveAnim(1);
-		LOR = -1;
-		if (IsFlying == true) {
-			AnimNum = 5;
+	if (PlayerActionController::getPlayingCombo() != 0) {
+		HandAnum.SetActiveAnim(2);
+		if (PlayerActionController::getPlayingCombo() == 1) {
+			if (PlayerActionController::EnemySide(LOR) == 1) {
+				AnimNum = 8;
+			}
+			else {
+				AnimNum = 9;
+			}
 		}
-		else if (IsFlying == false && ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetBody()->GetLinearVelocity().x == 0)
-			AnimNum = 1;
-		else {
-			AnimNum = 3;
+		else if (PlayerActionController::getPlayingCombo() == 2) {
+			if (PlayerActionController::EnemySide(LOR) == 1) {
+				AnimNum = 10;
+			}
+			else {
+				AnimNum = 11;
+			}
+		}
+		else if (PlayerActionController::getPlayingCombo() == 3) {
+			if (PlayerActionController::EnemySide(LOR) == 1) {
+				AnimNum = 12;
+			}
+			else {
+				AnimNum = 13;
+			}
 		}
 	}
 	else {
-		HandAnum.SetActiveAnim(0);
-		LOR = 1;
-		if (IsFlying == true) {
-			AnimNum = 4;
-		}
-		else if (IsFlying == false && ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetBody()->GetLinearVelocity().x == 0) {
-			AnimNum = 0;
+
+		if (handangle + Transform::ToRadians(180.f) >= PI / 2 && handangle + Transform::ToRadians(180.f) <= (3 * PI) / 2) {
+			HandAnum.SetActiveAnim(1);
+			LOR = -1;
+			if (IsFlying == true) {
+				AnimNum = 5;
+			}
+			else if (IsFlying == false && ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetBody()->GetLinearVelocity().x == 0)
+				AnimNum = 1;
+			else {
+				AnimNum = 3;
+			}
 		}
 		else {
-			AnimNum = 2;
-		}		
+			HandAnum.SetActiveAnim(0);
+			LOR = 1;
+			if (IsFlying == true) {
+				AnimNum = 4;
+			}
+			else if (IsFlying == false && ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetBody()->GetLinearVelocity().x == 0) {
+				AnimNum = 0;
+			}
+			else {
+				AnimNum = 2;
+			}
+		}
 	}
+
+
 	PlayerAnim.SetActiveAnim(AnimNum);
 	//Resets the enabled flag
 	m_motion = false;
@@ -438,7 +488,6 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 {
 	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
 		PlayerActionController::Shoot(m_activeScene, handangle);
-
 		Camera tempCam = ECS::GetComponent<Camera>(EntityIdentifier::MainCamera());
 		vec2 windowSpace = vec2(float(BackEnd::GetWindowWidth()), float(BackEnd::GetWindowHeight()));
 		vec2 position = vec2(tempCam.GetPositionX(), tempCam.GetPositionY());
@@ -456,8 +505,12 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 
 	}
 
+	auto body = ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetBody();
+
 	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
-		printf("b2Vec2 WallPos[] = {");
+		PlayerActionController::UpdateAttack();
+
+		/*printf("b2Vec2 WallPos[] = {");
 		for (int x = 0; x < ClickCounter; x++) {
 			if (x != ClickCounter - 1) {
 				cout <<"b2Vec2("<< point[x].x << " , " << point[x].y << ")," << endl;
@@ -465,7 +518,7 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 				cout << "b2Vec2("<< point[x].x << " , " << point[x].y <<") };"<< endl;
 			}
 		}
-
+		*/
 	}
 
 	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_MIDDLE)) {

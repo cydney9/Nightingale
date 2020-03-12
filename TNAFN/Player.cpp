@@ -26,10 +26,12 @@ void Player::CreatePlayer(b2World& phyworld, int x, int y)
 	animController.AddAnimation(player_json["flyLeft"]);
 	animController.AddAnimation(player_json["dashRight"]);
 	animController.AddAnimation(player_json["dashLeft"]);
-	animController.AddAnimation(player_json["dashRight"]);
-	animController.AddAnimation(player_json["attackRight"]);
-	animController.AddAnimation(player_json["attackLeft"]);
-
+	animController.AddAnimation(player_json["attackRight1"]);
+	animController.AddAnimation(player_json["attackLeft1"]);
+	animController.AddAnimation(player_json["attackRight2"]);
+	animController.AddAnimation(player_json["attackLeft2"]);
+	animController.AddAnimation(player_json["attackRight3"]);
+	animController.AddAnimation(player_json["attackLeft3"]);
 
 	auto& tempSpr = ECS::GetComponent<Sprite>(entity);
 	auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
@@ -47,7 +49,7 @@ void Player::CreatePlayer(b2World& phyworld, int x, int y)
 	tempBody = phyworld.CreateBody(&tempDef);
 
 	tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight()- shrinkY - 10),
-	vec2(0.f, -5.f), true);
+	vec2(0.f, -5.f), true, CollisionIDs::Player(), CollisionIDs::Enemy()| CollisionIDs::Enviroment());
 	tempPhsBody.SetFriction(0.15);
 
 	//fixture definition
@@ -68,5 +70,4 @@ void Player::CreatePlayer(b2World& phyworld, int x, int y)
 	ECS::SetIsMainPlayer(entity, true);
 
 	ContactList::AddToList(entity);
-	EntityList::AddToList(entity);
 }

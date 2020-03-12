@@ -1,7 +1,5 @@
 #pragma once
 #include "ECS.h"
-#include <chrono>
-#include <ctime>
 
 class AI
 {

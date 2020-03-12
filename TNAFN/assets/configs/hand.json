@@ -3,13 +3,19 @@
 
     "Frame0": [ 0.0, 400.0, 800.0, 0.0 ],
     "NumFrames": 1,
-    "Repeating": true,
+    "Repeating": false,
     "SecsPerFrame": 1.0
   },
   "HandLeft": {
     "Frame0": [ 0.0, 0.0, 800.0, 400.0 ],
     "NumFrames": 1,
-    "Repeating": true,
+    "Repeating": false,
+    "SecsPerFrame": 1.0
+  },
+  "Attacking": {
+    "Frame0": [ 0.0, 800.0, 800.0, 400.0 ],
+    "NumFrames": 1,
+    "Repeating": false,
     "SecsPerFrame": 1.0
   }
 }
