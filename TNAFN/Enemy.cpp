@@ -22,7 +22,7 @@ void Enemy::CreateEnemy(b2World& phyworld, int x, int y, int type)
 	EnemyanimController.AddAnimation(Enemy_jason["Enemy_Left"]);
 	EnemyanimController.AddAnimation(Enemy_jason["Enemy_Right"]);
 	EnemyanimController.SetActiveAnim(0);
-	ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 30, 30, true, &EnemyanimController);
+	ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 60, 60, true, &EnemyanimController);
 	auto& tempSpr = ECS::GetComponent<Sprite>(entity);
 	auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
 
@@ -32,16 +32,18 @@ void Enemy::CreateEnemy(b2World& phyworld, int x, int y, int type)
 	//ID type is player
 	//Collides with Enemies and Enviroment
 	//Moves
-	float shrinkX = tempSpr.GetWidth() / 1.7f;
-	float shrinkY = tempSpr.GetWidth() / 2.f;
+	float shrinkX = tempSpr.GetWidth() / 1.2f;
+	float shrinkY = tempSpr.GetHeight() / 2.f;
 	b2Body* tempBody;
 	b2BodyDef tempDef;
 	tempDef.type = b2_dynamicBody;
 	tempDef.position.Set(float32(x), float32(y));
 	tempDef.fixedRotation = true;
 	tempBody = phyworld.CreateBody(&tempDef);
-	tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight() - 10),
-		vec2(0.f, -5.f), true, CollisionIDs::Enemy(), CollisionIDs::Bullet()| CollisionIDs::Player()| CollisionIDs::Enemy()| CollisionIDs::Enviroment());
+
+	tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight() - shrinkY - 10),
+		vec2(0.f, -5.f), true, CollisionIDs::Enemy(), CollisionIDs::Bullet() | CollisionIDs::Player() | CollisionIDs::Enemy() | CollisionIDs::Enviroment());
+
 	tempPhsBody.SetFriction(0.15);
 
 	AIController = AI(entity, type);
