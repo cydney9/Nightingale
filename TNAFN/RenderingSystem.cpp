@@ -23,6 +23,7 @@ void RenderingSystem::Update(entt::registry* reg)
 		ai.Update();
 	}
 
+
 	//*Sprite AND Transform
 	auto view = reg->view<Sprite, Transform>();
 
@@ -84,7 +85,7 @@ void RenderingSystem::Update(entt::registry* reg)
 	}
 
 	Bullet::update(reg);
-
+	Enemy::update(reg);
 	//auto view3 = reg->view<HealthBar>();
 
 	//loops through all entities within view3

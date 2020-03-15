@@ -1,6 +1,7 @@
 #pragma once
 #include "ECS.h"
 #include "ContactList.h"
+
 class Enemy
 {
 	friend class PlayerActionController;
@@ -16,7 +17,6 @@ public:
 	static void update(entt::registry* reg);
 
 private:
-	int HP = 3;
 	static std::vector<unsigned int> EnemyList;
 };
 

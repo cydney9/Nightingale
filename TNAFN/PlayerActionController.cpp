@@ -1,5 +1,4 @@
 #include "PlayerActionController.h"
-#include <cmath>
 void PlayerActionController::walkLeft(b2Body* body, b2Vec2 vel, float desireVel)
 {
 	desireVel = b2Min(vel.x - 0.2f, -10.f);
@@ -149,6 +148,12 @@ bool PlayerActionController::ComboCheck()
 			PlayingCombo = 0;
 			Combo3Timer = 0.48;
 		}
+
+		for (int x(0); x < Enemy::EnemyList.size(); x++) {
+			auto &Enemy = ECS::GetComponent<HealthBar>(Enemy::EnemyList[x]);
+			Enemy.SetCanDamage(true);
+		}
+
 		return true;
 	}
 	auto body = ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetBody();
@@ -283,7 +288,7 @@ int PlayerActionController::DistanceCheck(unsigned int CEntity, unsigned int ent
 }
 
 float PlayerActionController::AttackAngleCheck(unsigned int entity)
-{
+{ 
 	auto& EnemyphysicsBod = ECS::GetComponent<PhysicsBody>(entity);
 
 	float PlayerX = ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()).GetPositionX();
@@ -355,6 +360,110 @@ bool PlayerActionController::IsDash()
 int PlayerActionController::DashingSide()
 {
 	return Dashside;
+}
+
+void PlayerActionController::Lockback(b2Body* body,int LOR)
+{
+	if (PlayingCombo ==1&& Combo1Timer<0.6) {
+		for (int x(0); x < Enemy::EnemyList.size(); x++) {
+			auto& EnemyphysicsBod = ECS::GetComponent<PhysicsBody>(Enemy::EnemyList[x]);
+			auto& EnemyHP = ECS::GetComponent<HealthBar>(Enemy::EnemyList[x]);
+			if (EnemySide(LOR) == -1) {
+				if (body->GetPosition().x - 60 < EnemyphysicsBod.GetBody()->GetPosition().x&&
+					EnemyphysicsBod.GetBody()->GetPosition().x<body->GetPosition().x &&
+					body->GetPosition().y + 40>EnemyphysicsBod.GetBody()->GetPosition().y&&
+					EnemyphysicsBod.GetBody()->GetPosition().y>body->GetPosition().y-40) {
+
+					EnemyphysicsBod.GetBody()->ApplyLinearImpulse(b2Vec2(-270 ,0), body->GetWorldCenter(), true);
+					EnemyHP.Damage(0.1f);
+					EnemyHP.SetCanDamage(false);
+				}
+			}
+			else {
+				if (body->GetPosition().x + 60 > EnemyphysicsBod.GetBody()->GetPosition().x &&
+					EnemyphysicsBod.GetBody()->GetPosition().x>body->GetPosition().x &&
+					body->GetPosition().y + 40>EnemyphysicsBod.GetBody()->GetPosition().y &&
+					EnemyphysicsBod.GetBody()->GetPosition().y > body->GetPosition().y - 40) {
+
+					EnemyphysicsBod.GetBody()->ApplyLinearImpulse(b2Vec2(270,0), body->GetWorldCenter(), true);
+					EnemyHP.Damage(0.1f);
+					EnemyHP.SetCanDamage(false);
+				}
+			}
+		}
+	}else if (PlayingCombo == 2 && Combo2Timer < 0.3) {
+		for (int x(0); x < Enemy::EnemyList.size(); x++) {
+			auto& EnemyphysicsBod = ECS::GetComponent<PhysicsBody>(Enemy::EnemyList[x]);
+			auto& EnemyHP = ECS::GetComponent<HealthBar>(Enemy::EnemyList[x]);
+			if (EnemySide(LOR) == -1) {
+				if (body->GetPosition().x - 60 < EnemyphysicsBod.GetBody()->GetPosition().x &&
+					EnemyphysicsBod.GetBody()->GetPosition().x<body->GetPosition().x &&
+					body->GetPosition().y + 40>EnemyphysicsBod.GetBody()->GetPosition().y &&
+					EnemyphysicsBod.GetBody()->GetPosition().y > body->GetPosition().y - 40) {
+
+					EnemyphysicsBod.GetBody()->ApplyLinearImpulse(b2Vec2(-270, 0), body->GetWorldCenter(), true);
+					EnemyHP.Damage(0.1f);
+					EnemyHP.SetCanDamage(false);
+				}
+			}
+			else {
+				if (body->GetPosition().x + 60 > EnemyphysicsBod.GetBody()->GetPosition().x &&
+					EnemyphysicsBod.GetBody()->GetPosition().x > body->GetPosition().x &&
+					body->GetPosition().y + 40 > EnemyphysicsBod.GetBody()->GetPosition().y &&
+					EnemyphysicsBod.GetBody()->GetPosition().y > body->GetPosition().y - 40) {
+
+					EnemyphysicsBod.GetBody()->ApplyLinearImpulse(b2Vec2(270, 0), body->GetWorldCenter(), true);
+					EnemyHP.Damage(0.1f);
+					EnemyHP.SetCanDamage(false);
+				}
+			}
+		}
+	}
+	else if (PlayingCombo == 3 && Combo3Timer < 0.4) {
+		for (int x(0); x < Enemy::EnemyList.size(); x++) {
+			auto& EnemyphysicsBod = ECS::GetComponent<PhysicsBody>(Enemy::EnemyList[x]);
+			auto& EnemyHP = ECS::GetComponent<HealthBar>(Enemy::EnemyList[x]);
+			if (EnemySide(LOR) == -1) {
+				if (body->GetPosition().x - 60 < EnemyphysicsBod.GetBody()->GetPosition().x &&
+					EnemyphysicsBod.GetBody()->GetPosition().x<body->GetPosition().x &&
+					body->GetPosition().y + 40>EnemyphysicsBod.GetBody()->GetPosition().y &&
+					EnemyphysicsBod.GetBody()->GetPosition().y > body->GetPosition().y - 40) {
+
+					EnemyHP.Damage(0.1f);
+					EnemyphysicsBod.GetBody()->ApplyForce(b2Vec2(0, 14000), body->GetWorldCenter(), true);
+					EnemyphysicsBod.GetBody()->ApplyLinearImpulse(b2Vec2(-540 , 0), body->GetWorldCenter(), true);
+					EnemyHP.SetCanDamage(false);
+				}
+			}
+			else {
+				if (body->GetPosition().x + 60 > EnemyphysicsBod.GetBody()->GetPosition().x &&
+					EnemyphysicsBod.GetBody()->GetPosition().x > body->GetPosition().x &&
+					body->GetPosition().y + 40 > EnemyphysicsBod.GetBody()->GetPosition().y &&
+					EnemyphysicsBod.GetBody()->GetPosition().y > body->GetPosition().y - 40) {
+
+					EnemyHP.Damage(0.1f);
+					EnemyphysicsBod.GetBody()->ApplyForce(b2Vec2(0, 14000), body->GetWorldCenter(), true);
+					EnemyphysicsBod.GetBody()->ApplyLinearImpulse(b2Vec2(540 , 0) , body->GetWorldCenter(), true);
+					EnemyHP.SetCanDamage(false);
+				}
+			}
+		}
+	}
+}
+
+float PlayerActionController::getCombo1Timer()
+{
+	return Combo1Timer;
+}
+
+float PlayerActionController::getCombo2Timer()
+{
+	return Combo2Timer;
+}
+
+float PlayerActionController::getCombo3Timer()
+{
+	return Combo3Timer;
 }
 
 

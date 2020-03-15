@@ -14,6 +14,8 @@ void Enemy::CreateEnemy(b2World& phyworld, int x, int y, int type)
 	ECS::AttachComponent<AnimationController>(entity);
 	ECS::AttachComponent<PhysicsBody>(entity);
 	ECS::AttachComponent<AI>(entity);
+	ECS::AttachComponent<HealthBar>(entity);
+
 	//Sets up components
 	std::string fileName = "Enemy.png";
 	auto& EnemyanimController = ECS::GetComponent<AnimationController>(entity);
@@ -21,12 +23,17 @@ void Enemy::CreateEnemy(b2World& phyworld, int x, int y, int type)
 	//Adds first animation
 	EnemyanimController.AddAnimation(Enemy_jason["Enemy_Left"]);
 	EnemyanimController.AddAnimation(Enemy_jason["Enemy_Right"]);
+	EnemyanimController.AddAnimation(Enemy_jason["meattack_Right"]);
+	EnemyanimController.AddAnimation(Enemy_jason["meattack_Left"]);
+
 	EnemyanimController.SetActiveAnim(0);
 	ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 60, 60, true, &EnemyanimController);
 	auto& tempSpr = ECS::GetComponent<Sprite>(entity);
 	auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
 
 	auto& AIController = ECS::GetComponent<AI>(entity);
+	
+	ECS::GetComponent<HealthBar>(entity).SetHealth(0.3f);
 
 	//Physics body covers the entire sprite
 	//ID type is player
@@ -86,6 +93,12 @@ void Enemy::RemoveFromEnemylist(unsigned int entity)
 
 bool Enemy::DeleteCheck(unsigned int entity)
 {
+	if (ECS::GetComponent<HealthBar>(entity).GetHealth() < 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
 	/*auto& BulletphysicsBod = ECS::GetComponent<PhysicsBody>(entity);
 
 	float PlayerX = ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()).GetPositionX();
@@ -98,8 +111,6 @@ bool Enemy::DeleteCheck(unsigned int entity)
 	else {
 		return false;
 	}*/
-
-	return false;
 }
 
 void Enemy::update(entt::registry* reg)

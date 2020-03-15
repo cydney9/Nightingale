@@ -22,7 +22,7 @@
     "Repeating": true,
     "SecsPerFrame": 0.17
   },
-  "meattack": {
+  "meattack_Left": {
     "Frame0": [ 0.0, 2400.0, 1200.0, 1200.0 ],
     "Frame1": [ 1200.0, 2400.0, 2400.0, 1200.0 ],
     "Frame2": [ 2400.0, 2400.0, 3600.0, 1200.0 ],
@@ -35,7 +35,7 @@
     "Repeating": true,
     "SecsPerFrame": 0.08
   },
-  "meattackR": {
+  "meattack_Right": {
     "Frame0": [ 1200.0, 2400.0, 0.0, 1200.0 ],
     "Frame1": [ 2400.0, 2400.0, 1200.0, 1200.0 ],
     "Frame2": [ 3600.0, 2400.0, 2400.0, 1200.0 ],

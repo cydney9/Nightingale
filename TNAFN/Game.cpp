@@ -183,6 +183,7 @@ void Game::CheckEvents()
 	}
 	b2Vec2 vel = b2Vec2(body->GetLinearVelocity());
 	PlayerActionController::Charge(body,LOR);
+	PlayerActionController::Lockback(body, LOR);
 
 	PlayerActionController::DashUpdate(body);
 

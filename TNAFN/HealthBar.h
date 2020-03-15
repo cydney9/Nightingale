@@ -1,9 +1,9 @@
 #pragma once
 
 #include "JSON.h"
-
 class HealthBar
 {
+	friend class PlayerActionController;
 public:
 	//Creates the health bar
 	HealthBar();
@@ -12,14 +12,18 @@ public:
 	//Destorys the current health
 	void DisplayHealth();
 
+	void Damage(float dam);
+
 	//Getters
 	float GetHealth() const;
 
 	//Setters
 	void SetHealth(float health);
+	void SetCanDamage(bool CanDam);
 private:
 	//100%health
 	float m_health = 1.f;
+	bool CanDamage;
 };
 
 //Sends healthbar To json file
