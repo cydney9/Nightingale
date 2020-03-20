@@ -1,5 +1,6 @@
 #include "PlayerActionController.h"
-void PlayerActionController::walkLeft(b2Body* body, b2Vec2 vel, float desireVel)
+
+void PlayerActionController::walkLeft(b2Body* body, b2Vec2 vel, float desireVel, Sound2D* walk)
 {
 	desireVel = b2Min(vel.x - 0.2f, -10.f);
 
@@ -9,9 +10,13 @@ void PlayerActionController::walkLeft(b2Body* body, b2Vec2 vel, float desireVel)
 	if (body->GetLinearVelocity().x < -10) {
 		body->SetLinearVelocity(b2Vec2(-10, body->GetLinearVelocity().y));
 	}
+	if (walk->isPlaying()==false) {
+		walk->play();
+	}
+
 }
 
-void PlayerActionController::walkRight(b2Body* body, b2Vec2 vel, float desireVel)
+void PlayerActionController::walkRight(b2Body* body, b2Vec2 vel, float desireVel, Sound2D* walk)
 {
 	desireVel = b2Max(vel.x + 0.2f, 10.f);
 
@@ -20,6 +25,9 @@ void PlayerActionController::walkRight(b2Body* body, b2Vec2 vel, float desireVel
 	body->ApplyLinearImpulse(b2Vec2(impulse, 0), body->GetWorldCenter(), true);
 	if (body->GetLinearVelocity().x > 10) {
 		body->SetLinearVelocity(b2Vec2(10, body->GetLinearVelocity().y));
+	}
+	if (walk->isPlaying()==false) {
+		walk->play();
 	}
 }
 
@@ -71,7 +79,7 @@ void PlayerActionController::Shoot(Scene* scene,float handangle)
 	float WH_Y = ECS::GetComponent<Transform>(EntityIdentifier::WeaponHand()).GetPositionY();
 	float WH_angle = ECS::GetComponent<Transform>(EntityIdentifier::WeaponHand()).GetRotationAngleZ();
 
-	Bullet::CreateBullet(scene->GetPhysicsWorld(), WH_X + (10 * cos(handangle + Transform::ToRadians(180.f))), WH_Y + (10 * sin(handangle + Transform::ToRadians(180.f))), handangle + Transform::ToRadians(180.f));
+	Bullet::CreateBullet(scene->GetPhysicsWorld(), WH_X + (10 * cos(handangle + Transform::ToRadians(180.f))), WH_Y + (10 * sin(handangle + Transform::ToRadians(180.f))), handangle + Transform::ToRadians(180.f),false);
 
 	ECS::GetComponent<HorizontalScroll>(EntityIdentifier::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()));
 	ECS::GetComponent<VerticalScroll>(EntityIdentifier::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()));
@@ -117,12 +125,13 @@ void PlayerActionController::CBTimer()
 	}
 }
 
-bool PlayerActionController::ComboCheck()
+bool PlayerActionController::ComboCheck(Sound2D* sword)
 {
 	if (Combo1Timer < 0 || Combo2Timer < 0 || Combo3Timer < 0) {
 		if (Combo1Timer < 0) {
 			if (wantNextCombo) {
 				PlayingCombo = 2;
+				sword->play();
 			}
 			else {
 				PlayingCombo = 0;
@@ -134,6 +143,7 @@ bool PlayerActionController::ComboCheck()
 		if (Combo2Timer < 0) {
 			if (wantNextCombo) {
 				PlayingCombo = 3;
+				sword->play();
 			}
 			else {
 				PlayingCombo = 0;
@@ -176,11 +186,13 @@ int PlayerActionController::WhatIsPlayingNow()
 	}
 }
 
-void PlayerActionController::UpdateAttack()
+void PlayerActionController::UpdateAttack(Sound2D* sword)
 {
+
 	auto body = ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetBody();
 	if (WhatIsPlayingNow() == 0) {
 		PlayingCombo = 1;
+		sword->play();
 	}
 	else if (WhatIsPlayingNow() == 1) {
 		wantNextCombo = true;

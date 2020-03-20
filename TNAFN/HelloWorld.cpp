@@ -205,7 +205,7 @@ void HelloWorld::InitScene(float windowWidth, float windowHeight)
 	WeaponHand H(ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetPosition().x, ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetPosition().y, ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()).GetPosition().z - 1);
 
 	//	Setup Enemy Entity
-	Enemy::CreateEnemy(*m_physicsWorld, -700, 350, 0);
+	Enemy::CreateEnemy(*m_physicsWorld, -700, 350, 1);
 
 	Enemy::CreateEnemy(*m_physicsWorld, -630, 350, 0);
 

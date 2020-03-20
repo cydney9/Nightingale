@@ -13,7 +13,6 @@ void RenderingSystem::Update(entt::registry* reg)
 {
 	//Clear the buffers
 	EffectManager::ClearBuffers();
-
 	//Creates a view of all Enemy consisting of both
 
 	auto viewEnemy = reg->view<AI>();
@@ -22,7 +21,6 @@ void RenderingSystem::Update(entt::registry* reg)
 		AI& ai = viewEnemy.get(entity);
 		ai.Update();
 	}
-
 
 	//*Sprite AND Transform
 	auto view = reg->view<Sprite, Transform>();
@@ -37,6 +35,7 @@ void RenderingSystem::Update(entt::registry* reg)
 		//Updates the transform of x entity
 		view.get<Transform>(entity).Update();
 	}
+
 
 	//Creates a view consisting of all entityies containing horizontal scroll
 	auto view2_1 = reg->view<HorizontalScroll>();
@@ -83,6 +82,9 @@ void RenderingSystem::Update(entt::registry* reg)
 		//Unbinds the shader
 		drawShader.Unbind();
 	}
+
+
+
 
 	Bullet::update(reg);
 	Enemy::update(reg);

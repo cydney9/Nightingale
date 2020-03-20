@@ -1,0 +1,13 @@
+{
+  "Barrel_Right": {
+    "Frame0": [ 0.0, 376.0, 376.0, 0.0 ]
+    "NumFrames": 1,
+    "Repeating": true,
+    "SecsPerFrame": 1
+  },  "Barrel_Left": {
+    "Frame0": [ 376.0, 376.0, 0.0, 0.0 ]
+    "NumFrames": 1,
+    "Repeating": true,
+    "SecsPerFrame": 1
+  }
+}

@@ -49,6 +49,7 @@ public:
 	static unsigned int HoriScrollCameraBit();
 	static unsigned int VertScrollCameraBit();
 	static unsigned int AIBit();
+	static unsigned int BarrelBit();
 
 	//Setters
 	//Sets main player entity
@@ -58,6 +59,10 @@ public:
 	//set WeaponHand
 	static void WeaponHand(unsigned int entity);
 	void SetIsWeaponHand(bool WH);
+
+	//set Barrel
+	static void Barrel(unsigned int entity);
+	void SetIsBarrel(bool Bar);
 
 	//Sets main camera entity
 	static void MainCamera(unsigned int entity);
@@ -97,6 +102,10 @@ private:
 	static unsigned int m_Enemy;
 	bool m_isEnemy = false;
 
+	//Barrel
+	static unsigned int m_Barrel;
+	bool m_isBarrel = false;
+
 	//Bullet
 	static unsigned int m_Bullet;
 	bool m_isBullet = false;
@@ -122,6 +131,7 @@ private:
 	static unsigned int m_horiScrollCameraBit;
 	static unsigned int m_vertScrollCameraBit;
 	static unsigned int m_AIBit;
+	static unsigned int m_BarrelBit;
 };
 
 #ifndef __ENTITYIDENTIFIERJSON_H__

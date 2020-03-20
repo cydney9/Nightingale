@@ -2,6 +2,7 @@
 
 #include <ctime>
 #include <chrono>
+#include "Barrel.h"
 
 
 
@@ -15,6 +16,7 @@ AI::AI(unsigned int entity, int type)
 	entityNum = entity;
 	AItype = type;
 	AttackTimer = 1;
+
 }
 
 void AI::WalkToPlayer()
@@ -30,15 +32,15 @@ void AI::WalkToPlayer()
 	if (EnemyX > PlayerX - 150 && EnemyX < PlayerX + 150) {
 		if (AItype == 0&&IsAttack==false) {
 			if (PlayerX > EnemyX) {
-				desireVel = b2Max(vel.x + 0.1f, 50.f);
+				desireVel = b2Max(vel.x + 0.1f, 40.f);
 				EnemyAnimation.SetActiveAnim(1);
 			}
 			else {
-				desireVel = b2Min(vel.x - 0.1f, -50.f);
+				desireVel = b2Min(vel.x - 0.1f, -40.f);
 				EnemyAnimation.SetActiveAnim(0);
 			}
 		}
-		else if (IsAttack==true) {
+		else if (AItype == 0 && IsAttack==true) {
 			if (PlayerX > EnemyX) {
 				EnemyAnimation.SetActiveAnim(3);
 			}
@@ -46,11 +48,21 @@ void AI::WalkToPlayer()
 				EnemyAnimation.SetActiveAnim(2);
 			}
 		}
+		else if (AItype == 1) {
+			if (PlayerX > EnemyX) {
+				desireVel = b2Max(vel.x + 0.1f, 25.f);
+				EnemyAnimation.SetActiveAnim(5);
+			}
+			else {
+				desireVel = b2Min(vel.x - 0.1f, -25.f);
+				EnemyAnimation.SetActiveAnim(4);
+			}
+		}
 		float velChange = desireVel - vel.x;
 		float impulse = EBody.GetBody()->GetMass() * velChange;
 		EBody.GetBody()->ApplyForce(b2Vec2(impulse, 0), EBody.GetBody()->GetWorldCenter(), true);
 
-		if (EBody.GetBody()->GetLinearVelocity().x < 3.f && EBody.GetBody()->GetLinearVelocity().x > -3.f&&EBody.GetIsGrounded()) {
+		if (EBody.GetBody()->GetLinearVelocity().x < 3.f && EBody.GetBody()->GetLinearVelocity().x > -3.f&&EBody.GetIsGrounded()&& AItype == 0) {
 			currenttime = sc.now();
 			auto time_span = static_cast<std::chrono::duration<double>>(currenttime - starttime);
 			if ((double)time_span.count() > 3) {
@@ -64,11 +76,12 @@ void AI::WalkToPlayer()
 
 void AI::EnemyAttack()
 {
+
 	auto& EBody = ECS::GetComponent<PhysicsBody>(entityNum);
+	auto& body = ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer());
+	auto& PlayerHP = ECS::GetComponent<HealthBar>(EntityIdentifier::MainPlayer());
+
 	if (CanAttack==true) {
-		auto& EBody = ECS::GetComponent<PhysicsBody>(entityNum);
-		auto& body = ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer());
-		auto& PlayerHP = ECS::GetComponent<HealthBar>(EntityIdentifier::MainPlayer());
 		if (EBody.GetBody()->GetPosition().x < body.GetBody()->GetPosition().x &&
 			body.GetBody()->GetPosition().x<EBody.GetBody()->GetPosition().x + 30 &&
 			EBody.GetBody()->GetPosition().y + 15>body.GetBody()->GetPosition().y &&
@@ -76,10 +89,6 @@ void AI::EnemyAttack()
 			
 			CanAttack = false;
 			IsAttack = true;
-			if (AttackTimer<0.5) {
-				PlayerHP.Damage(0.1f);
-				PlayerHP.SetCanDamage(false);
-			}
 		}
 		else if (EBody.GetBody()->GetPosition().x-30 < body.GetBody()->GetPosition().x &&
 			body.GetBody()->GetPosition().x<EBody.GetBody()->GetPosition().x  &&
@@ -88,11 +97,34 @@ void AI::EnemyAttack()
 
 			CanAttack = false;
 			IsAttack = true;
+		}
+	}
+
+	if(IsAttack==true&& AItype==0){
+		if (EBody.GetBody()->GetPosition().x < body.GetBody()->GetPosition().x &&
+			body.GetBody()->GetPosition().x<EBody.GetBody()->GetPosition().x + 30 &&
+			EBody.GetBody()->GetPosition().y + 15>body.GetBody()->GetPosition().y &&
+			body.GetBody()->GetPosition().y > EBody.GetBody()->GetPosition().y - 15) {
+
 			if (AttackTimer < 0.5) {
 				PlayerHP.Damage(0.1f);
 				PlayerHP.SetCanDamage(false);
+				body.GetBody()->ApplyForce(b2Vec2(45000, 45000), body.GetBody()->GetWorldCenter(), true);
 			}
 		}
+		else if (EBody.GetBody()->GetPosition().x - 30 < body.GetBody()->GetPosition().x &&
+			body.GetBody()->GetPosition().x<EBody.GetBody()->GetPosition().x &&
+			EBody.GetBody()->GetPosition().y + 15>body.GetBody()->GetPosition().y &&
+			body.GetBody()->GetPosition().y > EBody.GetBody()->GetPosition().y - 15) {
+
+			if (AttackTimer < 0.5) {
+				PlayerHP.Damage(0.1f);
+				PlayerHP.SetCanDamage(false);
+				body.GetBody()->ApplyForce(b2Vec2(-45000, 45000), body.GetBody()->GetWorldCenter(), true);
+			}
+		}
+	}
+	else if (IsAttack == true && AItype == 1) {
 	}
 }
 
@@ -106,12 +138,10 @@ void AI::Update()
 			AttackTimer = 0.64;
 			IsAttack = false;
 			PlayerHP.SetCanDamage(true);
-		}
-		else {
+		}else {
 			AttackTimer -= Timer::deltaTime;
 		}
-	}
-	else if (CanAttack == false) {
+	}else if (CanAttack == false) {
 		if (AttackCoolDown < 0) {
 			AttackCoolDown = 0.5;
 			CanAttack = true;
@@ -120,9 +150,16 @@ void AI::Update()
 			AttackCoolDown-= Timer::deltaTime;
 		}
 	}
-
+	BarrelRota();
 	WalkToPlayer();
 	EnemyAttack();
+}
+
+void AI::BarrelRota()
+{
+	if (AItype == 1) {
+		ECS::GetComponent<Barrel>(entityNum).Update();
+	}
 }
 
 void AI::SetAIType(int type)
@@ -133,6 +170,11 @@ void AI::SetAIType(int type)
 float AI::getAttackTimer()
 {
 	return AttackTimer;
+}
+
+int AI::getAIType()
+{
+	return AItype;
 }
 
 

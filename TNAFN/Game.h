@@ -3,7 +3,7 @@
 
 #include "BackEnd.h"
 #include "HelloWorld.h"
-
+#include "GPCSound.h"
 
 
 //Our main class for running our game
@@ -71,6 +71,7 @@ public:
 	void MouseMotion(SDL_MouseMotionEvent evnt);
 	void MouseClick(SDL_MouseButtonEvent evnt);
 	void MouseWheel(SDL_MouseWheelEvent evnt);
+
 private:
 	
 	//The window
@@ -88,6 +89,9 @@ private:
 	Scene* m_activeScene;
 	std::vector<Scene*> m_scenes;
 	
+	//Sound
+	std::vector<Sound2D*> m_sound;
+
 //Mouse position in world
 	vec2 m_mouseGL = vec2(0.f, 0.f);
 

@@ -61,15 +61,21 @@ unsigned SoundManager::play2DSound(unsigned soundIndex, unsigned groupIndex)
 	//flag to check if all channels are nullptr
 	bool allNullptr = true;
 
-	for (unsigned i = 0; i < _channels.size(); i++) {
+	for (unsigned i (0); i < _channels.size(); i++) {
 		if (_channels[i] != nullptr) {
 			allNullptr = false;
 			bool playing = false;
 
 			//check if the channel is playing a sound, if it isn't then that our index
 			_channels[i]->isPlaying(&playing);
-			if (!playing)//is the channel is free
+			if (!playing) {//is the channel is free
 				index = i;
+				break;
+			}
+		}
+		else if (!allNullptr) {
+			index = i;
+			break;
 		}
 	}
 	if (allNullptr)
@@ -109,11 +115,13 @@ Sound2D::Sound2D(const std::string& path,const std::string& groupName)
 void Sound2D::play()
 {
 	_channel = SoundManager::play2DSound(_sound, _group);
+
 }
 
 bool Sound2D::isPlaying()
 {
 	bool playing = false;
+
 	SoundManager::_channels[_channel]->isPlaying(&playing);
 	return playing;
 }

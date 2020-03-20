@@ -3,8 +3,8 @@
 #include "Utilities.h"
 #include "Scene.h"
 #include "vector"
-#include "GPCSound.h"
 
+#include "GPCSound.h"
 #include "PlayerActionController.h"
 
 //value use for combo
@@ -58,8 +58,6 @@ void Game::InitGame()
 	//Grabs the initialized window
 	m_window = BackEnd::GetWindow();
 
-
-
 	//Creates a new HelloWorld scene
 	m_scenes.push_back(new HelloWorld("HorizontalScrolling"));
 	m_scenes.push_back(new Scene("First Loaded Scene"));
@@ -75,20 +73,22 @@ void Game::InitGame()
 	m_register = m_activeScene->GetScene();
 
 	PhysicsSystem::Init();
+
+	SoundManager::init("./Assets/Sounds/");
+	m_sound.push_back(new Sound2D("Sound.wav", "group1"));
+	m_sound.push_back(new Sound2D("Sword.wav", "group1"));
+	m_sound.push_back(new Sound2D("Walk.wav", "group2"));
+
 }
 
 bool Game::Run()
 {
-	SoundManager::init("./Assets/Sounds/");
-	Sound2D _test("Sound.wav", "group1");
 	//While window is still open
+
 	while (m_window->isOpen())
 	{
-
-		std::vector<Sound2D> sound;
-		if (!_test.isPlaying())
-				_test.play();
-
+		if(!m_sound[0]->isPlaying())
+			m_sound[0]->play();
 		frameStart = SDL_GetTicks();
 
 		//Clear window with clearColor
@@ -160,6 +160,7 @@ void Game::CheckEvents()
 {
 	PlayerActionController::CBTimer();
 
+
 	if (m_close)
 		m_window->Close();
 
@@ -168,10 +169,11 @@ void Game::CheckEvents()
 
 	auto body = ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetBody();
 
-	if (PlayerActionController::ComboCheck()) {
+	if (PlayerActionController::ComboCheck(m_sound[1])) {
 		IsFlying = false;
 		int currentAnim=m_register->get<AnimationController>(EntityIdentifier::MainPlayer()).GetActiveAnim();
 		ECS::GetComponent<AnimationController>(EntityIdentifier::MainPlayer()).GetAnimation(currentAnim).Reset();
+		
 	}
 
 	if(IsFlying==false){
@@ -272,10 +274,10 @@ void Game::KeyboardHold()
 
 	if (PlayerActionController::IsCombo() == false&& PlayerActionController::IsDash()==false) {
 		if (Input::GetKey(Key::A) && IsFlying == false) {
-			PlayerActionController::walkLeft(body, vel, desireVel);
+			PlayerActionController::walkLeft(body, vel, desireVel,m_sound[2]);
 		}
 		if (Input::GetKey(Key::D) && IsFlying == false) {
-			PlayerActionController::walkRight(body, vel, desireVel);
+			PlayerActionController::walkRight(body, vel, desireVel, m_sound[2]);
 		}
 
 		//Flying mode
@@ -518,7 +520,7 @@ void Game::MouseClick(SDL_MouseButtonEvent evnt)
 	auto body = ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetBody();
 
 	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT) && PlayerActionController::IsDash() == false) {
-		PlayerActionController::UpdateAttack();
+		PlayerActionController::UpdateAttack(m_sound[1]);
 
 		/*printf("b2Vec2 WallPos[] = {");
 		for (int x = 0; x < ClickCounter; x++) {
@@ -564,4 +566,6 @@ void Game::MouseWheel(SDL_MouseWheelEvent evnt)
 	//Resets the enabled flag
 	m_wheel = false;
 }
+
+
 

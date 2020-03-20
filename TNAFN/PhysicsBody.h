@@ -27,12 +27,14 @@ public:
 	static unsigned int Enviroment();
 	static unsigned int Enemy();
 	static unsigned int Bullet();
+	static unsigned int EBullet();
 private:
 	//Hold the different IDs
 	static unsigned int m_playerID;
 	static unsigned int m_enviromentID;
 	static unsigned int m_enemyID;
 	static unsigned int m_bulletID;
+	static unsigned int m_EbulletID;
 };
 
 

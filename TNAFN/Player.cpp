@@ -1,4 +1,5 @@
 #include "Player.h"
+#include <GPCSound.h>
 
 void Player::CreatePlayer(b2World& phyworld, int x, int y)
 {
@@ -58,7 +59,7 @@ void Player::CreatePlayer(b2World& phyworld, int x, int y)
 	tempBody = phyworld.CreateBody(&tempDef);
 
 	tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight()- shrinkY - 10),
-	vec2(0.f, -5.f), true, CollisionIDs::Player(), CollisionIDs::Enemy()| CollisionIDs::Enviroment());
+	vec2(0.f, -5.f), true, CollisionIDs::Player(), CollisionIDs::Enemy()| CollisionIDs::Enviroment()|CollisionIDs::EBullet());
 	tempPhsBody.SetFriction(0.15);
 
 	//fixture definition

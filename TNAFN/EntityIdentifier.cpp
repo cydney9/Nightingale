@@ -5,6 +5,7 @@ unsigned int EntityIdentifier::m_mainPlayer = 0;
 unsigned int EntityIdentifier::m_WeaponHand = 0;
 unsigned int EntityIdentifier::m_Enemy      = 0;
 unsigned int EntityIdentifier::m_Bullet     = 0;
+unsigned int EntityIdentifier::m_Barrel		= 0;
 unsigned int EntityIdentifier::m_cameraBit			= 0x1;
 unsigned int EntityIdentifier::m_spriteBit			= 0x10;
 unsigned int EntityIdentifier::m_transformBit		= 0x100;
@@ -15,6 +16,9 @@ unsigned int EntityIdentifier::m_healthBarBit		= 0x1000000;
 unsigned int EntityIdentifier::m_horiScrollCameraBit= 0x10000000;
 unsigned int EntityIdentifier::m_vertScrollCameraBit= 0x2;
 unsigned int EntityIdentifier::m_AIBit				= 0x20;
+unsigned int EntityIdentifier::m_BarrelBit			= 0x200;
+
+
 
 //(having just camera means the bit = 1)
 //(having sprite, animation and transform)
@@ -165,6 +169,11 @@ unsigned int EntityIdentifier::AIBit()
 	return m_AIBit;
 }
 
+unsigned int EntityIdentifier::BarrelBit()
+{
+	return m_BarrelBit;
+}
+
 void EntityIdentifier::MainPlayer(unsigned int entity)
 {
 	//Sets the main player entity
@@ -185,6 +194,14 @@ void EntityIdentifier::WeaponHand(unsigned int entity)
 void EntityIdentifier::SetIsWeaponHand(bool WH)
 {
 	m_isWeaponHand = WH;
+}
+
+void EntityIdentifier::Barrel(unsigned int entity) {
+	m_Barrel = entity;
+}
+
+void EntityIdentifier::SetIsBarrel(bool Bar) {
+	m_isBarrel = Bar;
 }
 
 void EntityIdentifier::MainCamera(unsigned int entity)

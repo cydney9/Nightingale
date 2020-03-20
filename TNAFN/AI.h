@@ -1,6 +1,7 @@
 #pragma once
 #include "ECS.h"
 #include "Timer.h"
+
 class AI
 {
 public:
@@ -10,15 +11,14 @@ public:
 	void WalkToPlayer();
 	void EnemyAttack();
 	void Update();
-
-	void InRange();
+	void BarrelRota();
 
 	void SetAIType(int type);
 
 	float getAttackTimer();
-
+	int getAIType();
 	
-
+	
 private:
 	int AItype = 0; // 0 = melee, 1 = shooter, 2 = turret, 3 = boss
 	int speed=0;
@@ -30,4 +30,5 @@ private:
 
 	bool IsAttack = false;
 	bool CanAttack = true;
+
 };

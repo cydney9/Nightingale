@@ -4,6 +4,7 @@ unsigned int CollisionIDs::m_playerID       = 0x1;
 unsigned int CollisionIDs::m_enviromentID	= 0x10;
 unsigned int CollisionIDs::m_enemyID		= 0x100;
 unsigned int CollisionIDs::m_bulletID       = 0x1000;
+unsigned int CollisionIDs::m_EbulletID		= 0x10000;
 
 unsigned int CollisionIDs::Player()
 {
@@ -23,6 +24,11 @@ unsigned int CollisionIDs::Enemy()
 unsigned int CollisionIDs::Bullet()
 {
 	return m_bulletID;
+}
+
+unsigned int CollisionIDs::EBullet()
+{
+	return m_EbulletID;
 }
 
 vec3 PhysicsBody::m_gravityAcceleration = vec3(0.f, -35.f, 0.f);
