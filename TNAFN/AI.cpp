@@ -16,7 +16,14 @@ AI::AI(unsigned int entity, int type)
 	entityNum = entity;
 	AItype = type;
 	AttackTimer = 1;
-
+	if (AItype == 0) {
+		AttackCoolDown = 0.5;
+		CoolDownTime = 0.5;
+	}
+	else if (AItype == 1) {
+		AttackCoolDown = 3;
+		CoolDownTime = 3;
+	}
 }
 
 void AI::WalkToPlayer()
@@ -124,7 +131,25 @@ void AI::EnemyAttack()
 			}
 		}
 	}
-	else if (IsAttack == true && AItype == 1) {
+	else if (CanAttack == true && AItype == 1) {
+		float X = ECS::GetComponent<Transform>(entityNum).GetPositionX();
+		float Y = ECS::GetComponent<Transform>(entityNum).GetPositionY();
+		float PlayerX = ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()).GetPosition().x;
+		float PlayerY = ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()).GetPosition().y;
+
+		float dx = X - PlayerX;
+		float dy = Y - PlayerY;
+
+
+		float Angle = atan2(dy, dx);
+		Angle = Angle;
+
+		b2Body *Body = ECS::GetComponent<PhysicsBody>(entityNum).GetBody();
+		Bullet::CreateBullet(*Body->GetWorld(), X + (10 * cos(Angle + Transform::ToRadians(180.f))), Y + (10 * sin(Angle + Transform::ToRadians(180.f))), Angle + Transform::ToRadians(180.f), true);
+
+		ECS::GetComponent<HorizontalScroll>(EntityIdentifier::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()));
+		ECS::GetComponent<VerticalScroll>(EntityIdentifier::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()));
+		CanAttack = false;
 	}
 }
 
@@ -143,7 +168,7 @@ void AI::Update()
 		}
 	}else if (CanAttack == false) {
 		if (AttackCoolDown < 0) {
-			AttackCoolDown = 0.5;
+			AttackCoolDown = CoolDownTime;
 			CanAttack = true;
 		}
 		else {

@@ -75,7 +75,7 @@ void Player::CreatePlayer(b2World& phyworld, int x, int y)
 	footSensorFixture->SetUserData((void*)entity);
 
 	//Sets up thee Identifier
-	unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit()| EntityIdentifier::HealthBarBit();
+	unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit()| EntityIdentifier::HealthBarBit()| CollisionIDs::EBullet();
 	ECS::SetUpIdentifier(entity, bitHolder, "Player");
 	ECS::SetIsMainPlayer(entity, true);
 

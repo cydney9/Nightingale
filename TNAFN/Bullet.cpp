@@ -17,25 +17,25 @@ void Bullet::CreateBullet(b2World& phyworld, float x, float y,float angle,bool E
 
 	std::string fileName;
 	//Sets up components
-	//if (Enemy) {
-		fileName = "bullet.png";
-	/*}
-	else {
+	if (Enemy) {
 		fileName = "bullet2.png";
-	}*/
+	}
+	else {
+		fileName = "bullet.png";
+	}
 
 	auto& animController = ECS::GetComponent<AnimationController>(entity);
 	animController.InitUVs(fileName);
 	ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 30, 30, true, &animController);
 	//Adds first animation
-	//if (Enemy) {
+	if (Enemy) {
 		animController.AddAnimation(player_json["EB_L"]);
 		animController.AddAnimation(player_json["EB_R"]);
-	/*}
+	}
 	else {
 		animController.AddAnimation(player_json["B_L"]);
 		animController.AddAnimation(player_json["B_R"]);
-	}*/
+	}
 	auto& tempSpr = ECS::GetComponent<Sprite>(entity);
 	auto& tempPhsBody = ECS::GetComponent<PhysicsBody>(entity);
 	auto& TransformBody = ECS::GetComponent<Transform>(entity);
@@ -51,16 +51,16 @@ void Bullet::CreateBullet(b2World& phyworld, float x, float y,float angle,bool E
 	tempDef.position.Set(float32(x), float32(y));
 	tempBody = phyworld.CreateBody(&tempDef);
 
-	//if (Enemy) {
+	if (Enemy) {
 		tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth()), float(tempSpr.GetHeight()),
 			vec2(0.f, 0.f), false, CollisionIDs::EBullet(), CollisionIDs::Player());
-		speed = 10;
-	/*}
+		speed = 5;
+	}
 	else {
 		tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth()), float(tempSpr.GetHeight()),
 			vec2(0.f, 0.f), false, CollisionIDs::Bullet(), CollisionIDs::Enemy());
-		speed = 100;
-	}*/
+		speed = 10;
+	}
 	tempPhsBody.GetBody()->SetLinearVelocity(b2Vec2(speed * (cos(angle)), speed * sin(angle )));
 	tempPhsBody.GetBody()->SetTransform(tempPhsBody.GetBody()->GetPosition(), angle + Transform::ToRadians(180.f));
 	//Sets up thee Identifier

@@ -43,6 +43,8 @@ void Enemy::CreateEnemy(b2World& phyworld, int x, int y, int type)
 	
 	ECS::GetComponent<HealthBar>(entity).SetHealth(0.3f);
 
+
+
 	//Physics body covers the entire sprite
 	//ID type is player
 	//Collides with Enemies and Enviroment
@@ -55,12 +57,11 @@ void Enemy::CreateEnemy(b2World& phyworld, int x, int y, int type)
 	tempDef.position.Set(float32(x), float32(y));
 	tempDef.fixedRotation = true;
 	tempBody = phyworld.CreateBody(&tempDef);
-
+	AIController = AI(entity, type);
 	tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight() - shrinkY - 10),
 		vec2(0.f, -5.f), true, CollisionIDs::Enemy(), CollisionIDs::Bullet() | CollisionIDs::Player() | CollisionIDs::Enemy() | CollisionIDs::Enviroment());
 
 	tempPhsBody.SetFriction(0.15);
-	AIController = AI(entity, type);
 
 
 

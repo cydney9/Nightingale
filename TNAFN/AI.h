@@ -5,8 +5,8 @@
 class AI
 {
 public:
+	AI() {}
 	//create an AI
-	AI() {};
 	AI(unsigned int entity, int type);
 	void WalkToPlayer();
 	void EnemyAttack();
@@ -22,13 +22,11 @@ public:
 private:
 	int AItype = 0; // 0 = melee, 1 = shooter, 2 = turret, 3 = boss
 	int speed=0;
-	float AttackCoolDown=0.5;
-
+	float AttackCoolDown;
+	float CoolDownTime;
 	unsigned int entityNum = 0;
 
 	float AttackTimer=0.64;
-
 	bool IsAttack = false;
 	bool CanAttack = true;
-
 };
