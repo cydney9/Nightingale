@@ -2,6 +2,7 @@
 #include<iostream>
 #include<string>
 #include "ContactList.h"
+#include "Enemy.h"
 using namespace std;
 void Bullet::CreateBullet(b2World& phyworld, float x, float y,float angle,bool Enemy)
 {
@@ -43,8 +44,8 @@ void Bullet::CreateBullet(b2World& phyworld, float x, float y,float angle,bool E
 	//ID type is player
 	//Collides with Enemies and Enviroment
 	//Moves
-	float shrinkX = tempSpr.GetWidth() / 1.2f;
-	float shrinkY = tempSpr.GetHeight() / 2.f;
+	float shrinkX = tempSpr.GetWidth() ;
+	float shrinkY = tempSpr.GetHeight() ;
 	b2Body* tempBody;
 	b2BodyDef tempDef;
 	tempDef.type = b2_kinematicBody;
@@ -53,20 +54,25 @@ void Bullet::CreateBullet(b2World& phyworld, float x, float y,float angle,bool E
 
 	if (Enemy) {
 		tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth()), float(tempSpr.GetHeight()),
-			vec2(0.f, 0.f), false, CollisionIDs::EBullet(), CollisionIDs::Player());
-		speed = 5;
+			vec2(0.f, 0.f), false, CollisionIDs::EBullet(), CollisionIDs::EBullet());
+		speed = 0;
 	}
 	else {
 		tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth()), float(tempSpr.GetHeight()),
-			vec2(0.f, 0.f), false, CollisionIDs::Bullet(), CollisionIDs::Enemy());
-		speed = 10;
+			vec2(0.f, 0.f), false, CollisionIDs::Bullet(), CollisionIDs::Bullet());
+		speed = 0;
 	}
 	tempPhsBody.GetBody()->SetLinearVelocity(b2Vec2(speed * (cos(angle)), speed * sin(angle )));
 	tempPhsBody.GetBody()->SetTransform(tempPhsBody.GetBody()->GetPosition(), angle + Transform::ToRadians(180.f));
 	//Sets up thee Identifier
 	unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit() | EntityIdentifier::AnimationBit();
 	ECS::SetUpIdentifier(entity, bitHolder, "Bullet");
-	ECS::SetIsBullet(entity, true);
+	if (Enemy==true) {
+		ECS::SetIsEBullet(entity, true);
+	}
+	else {
+		ECS::SetIsBullet(entity, true);
+	}
 	ContactList::AddToList(entity);
 	AddToBulletlist(entity);
 }
@@ -107,6 +113,7 @@ bool Bullet::DeleteCheck(unsigned int entity)
 void Bullet::update(entt::registry* reg)
 {
 	for (int x(0); x < Bulletlist.size(); x++) {
+		damage(Bulletlist[x]);
 		if (DeleteCheck(Bulletlist[x])) {
 			ContactList::RemoveFromList(Bulletlist[x]);
 			ECS::DestroyEntity(Bulletlist[x]);
@@ -115,3 +122,56 @@ void Bullet::update(entt::registry* reg)
 		}
 	}
 }
+
+void Bullet::damage(unsigned int entity)
+{
+	auto body = ECS::GetComponent<PhysicsBody>(entity).GetBody();
+	float Angle = body->GetAngle();
+	if (IsEnemyBullet(entity) == false) {
+		for (int x(0); x < Enemy::EnemyList.size(); x++) {
+			float EnemyBodyX = ECS::GetComponent<PhysicsBody>(Enemy::EnemyList[x]).GetBody()->GetPosition().x;
+			float EnemyBodyY = ECS::GetComponent<PhysicsBody>(Enemy::EnemyList[x]).GetBody()->GetPosition().y;
+			if ((body->GetPosition().x +10 > EnemyBodyX && body->GetPosition().x -10 < EnemyBodyX)
+				&& (body->GetPosition().y + 10  > EnemyBodyY && body->GetPosition().y - 10 < EnemyBodyY)) {
+				auto& EnemyphysicsBod = ECS::GetComponent<PhysicsBody>(Enemy::EnemyList[x]);
+				auto& EnemyHP = ECS::GetComponent<HealthBar>(Enemy::EnemyList[x]);
+				cout << "X:" << body->GetPosition().x << ", Y:" << body->GetPosition().y << " " << endl;
+				EnemyHP.Damage(0.3f);
+			}
+		}
+	}
+
+	if (IsEnemyBullet(entity) == true) {
+			auto PlayerBody = ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetBody();
+			float PlayerBodyX = PlayerBody->GetPosition().x;
+			float PlayerBodyY = PlayerBody->GetPosition().y;
+			if ((body->GetPosition().x + 5  > PlayerBodyX && body->GetPosition().x - 5  < PlayerBodyX)
+				&& (body->GetPosition().y + 15  > PlayerBodyY && body->GetPosition().y - 15  < PlayerBodyY)) {
+				auto& PlayerHP = ECS::GetComponent<HealthBar>(EntityIdentifier::MainPlayer());
+				PlayerHP.Damage(0.1f);
+				PlayerHP.SetCanBeHitByBullet(false);
+				cout << "is hitting" << endl;
+			}
+	}
+}
+
+bool Bullet::IsEnemyBullet(unsigned int entity)
+{
+	if (ECS::GetComponent<EntityIdentifier>(entity).GetIsEBullet() == true) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool Bullet::CanItBeHitByBullet(unsigned int entity)
+{
+	if (ECS::GetComponent<HealthBar>(entity).GetCanBeHitByBullet() == true) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+

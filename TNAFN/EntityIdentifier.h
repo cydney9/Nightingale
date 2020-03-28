@@ -30,6 +30,10 @@ public:
 	static unsigned int Bullet();
 	bool GetIsBullet()const;
 
+	//Gets Bullet
+	static unsigned int EBullet();
+	bool GetIsEBullet()const;
+
 	//Get entity number
 	unsigned int GetEntity() const;
 	//Get identifier bitfield
@@ -76,6 +80,11 @@ public:
 	static void Bullet(unsigned int entity);
 	void SetIsBullet(bool Bul);
 
+	//Sets Bullet
+	static void EBullet(unsigned int entity);
+	void SetIsEBullet(bool Bul);
+
+
 	//Set entity number
 	void SetEntity(unsigned int entity);
 	//Set identifier bitfield
@@ -109,6 +118,10 @@ private:
 	//Bullet
 	static unsigned int m_Bullet;
 	bool m_isBullet = false;
+
+	//Bullet
+	static unsigned int m_EBullet;
+	bool m_isEBullet = false;
 
 	//Stores the entity number
 	unsigned int m_entity;

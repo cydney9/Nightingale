@@ -5,7 +5,10 @@ unsigned int EntityIdentifier::m_mainPlayer = 0;
 unsigned int EntityIdentifier::m_WeaponHand = 0;
 unsigned int EntityIdentifier::m_Enemy      = 0;
 unsigned int EntityIdentifier::m_Bullet     = 0;
+unsigned int EntityIdentifier::m_EBullet	= 0;
 unsigned int EntityIdentifier::m_Barrel		= 0;
+
+
 unsigned int EntityIdentifier::m_cameraBit			= 0x1;
 unsigned int EntityIdentifier::m_spriteBit			= 0x10;
 unsigned int EntityIdentifier::m_transformBit		= 0x100;
@@ -85,6 +88,16 @@ unsigned int EntityIdentifier::Bullet()
 bool EntityIdentifier::GetIsBullet() const
 {
 	return m_isBullet;
+}
+
+unsigned int EntityIdentifier::EBullet()
+{
+	return m_EBullet;
+}
+
+bool EntityIdentifier::GetIsEBullet() const
+{
+	return m_isEBullet;
 }
 
 unsigned int EntityIdentifier::GetEntity() const
@@ -235,6 +248,16 @@ void EntityIdentifier::Bullet(unsigned int entity)
 void EntityIdentifier::SetIsBullet(bool Bul)
 {
 	m_isBullet = Bul;
+}
+
+void EntityIdentifier::EBullet(unsigned int entity)
+{
+	m_EBullet = entity;
+}
+
+void EntityIdentifier::SetIsEBullet(bool Bul)
+{
+	m_isEBullet = Bul;
 }
 
 void EntityIdentifier::SetEntity(unsigned int entity)

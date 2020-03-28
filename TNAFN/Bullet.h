@@ -12,11 +12,12 @@ public:
 
 	static void update(entt::registry* reg);
 
+	static void damage(unsigned int entity);
 
-
+	static bool IsEnemyBullet(unsigned int entity);
+	bool CanItBeHitByBullet(unsigned int entity);
 private:
 	int speed=600;
-	int angle=0;
 	static std::vector<unsigned int> Bulletlist;
 
 };

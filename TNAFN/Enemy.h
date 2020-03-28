@@ -5,6 +5,7 @@
 class Enemy
 {
 	friend class PlayerActionController;
+	friend class Bullet;
 public:
 	Enemy() {}
 	static void CreateEnemy(b2World& phyworld,int x, int y ,int type);

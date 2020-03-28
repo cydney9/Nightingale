@@ -5,7 +5,7 @@ class Barrel
 {
 public:
 	void CreateBarrel(unsigned int entity, int x, int y, int z);
-	void Update();
+	void Update(int AI);
 	int getBarrelID();
 	float getAngle();
 private:

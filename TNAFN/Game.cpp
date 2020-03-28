@@ -207,7 +207,7 @@ void Game::AcceptInput()
 
 
 	if (ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetIsGrounded()) {
-		cout << "is grounded" << endl;
+		//cout << "is grounded" << endl;
 	}
 
 	ECS::GetComponent<Transform>(EntityIdentifier::WeaponHand()).SetPosition(vec3(bodyX + (1.8f*LOR) , bodyY - 3.0f, ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()).GetPosition().z - 1));

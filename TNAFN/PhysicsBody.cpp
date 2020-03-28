@@ -3,8 +3,8 @@
 unsigned int CollisionIDs::m_playerID       = 0x1;
 unsigned int CollisionIDs::m_enviromentID	= 0x10;
 unsigned int CollisionIDs::m_enemyID		= 0x100;
-unsigned int CollisionIDs::m_bulletID       = 0x1000;
-unsigned int CollisionIDs::m_EbulletID		= 0x10000;
+unsigned int CollisionIDs::m_EbulletID       = 0x1000;
+unsigned int CollisionIDs::m_bulletID = 0x2;
 
 unsigned int CollisionIDs::Player()
 {

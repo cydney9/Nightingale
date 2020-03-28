@@ -28,12 +28,15 @@ void Enemy::CreateEnemy(b2World& phyworld, int x, int y, int type)
 	EnemyanimController.AddAnimation(Enemy_jason["meattack_Left"]);
 	EnemyanimController.AddAnimation(Enemy_jason["tankwalk_Left"]);
 	EnemyanimController.AddAnimation(Enemy_jason["tankwalk_Right"]);
-
+	EnemyanimController.AddAnimation(Enemy_jason["cannonstand"]);
 	if (type == 0) {
 		EnemyanimController.SetActiveAnim(0);
 	}
 	else if (type == 1) {
 		EnemyanimController.SetActiveAnim(4);
+	}
+	else if (type == 2) {
+		EnemyanimController.SetActiveAnim(6);
 	}
 	ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 60, 60, true, &EnemyanimController);
 	auto& tempSpr = ECS::GetComponent<Sprite>(entity);
@@ -53,7 +56,12 @@ void Enemy::CreateEnemy(b2World& phyworld, int x, int y, int type)
 	float shrinkY = tempSpr.GetHeight() / 2.f;
 	b2Body* tempBody;
 	b2BodyDef tempDef;
-	tempDef.type = b2_dynamicBody;
+	if (type != 2) {
+		tempDef.type = b2_dynamicBody;
+	}
+	else {
+		tempDef.type = b2_staticBody;
+	}
 	tempDef.position.Set(float32(x), float32(y));
 	tempDef.fixedRotation = true;
 	tempBody = phyworld.CreateBody(&tempDef);
@@ -65,10 +73,7 @@ void Enemy::CreateEnemy(b2World& phyworld, int x, int y, int type)
 
 
 
-
-	if (type == 1) {
-		ECS::GetComponent<Barrel>(entity).CreateBarrel(entity,x,y, ECS::GetComponent<Transform>(entity).GetPositionZ()-1);
-	}
+	ECS::GetComponent<Barrel>(entity).CreateBarrel(entity,x,y, ECS::GetComponent<Transform>(entity).GetPositionZ()-1);
 
 	//fixture definition
 	b2PolygonShape polygonShape;
@@ -121,7 +126,7 @@ void Enemy::update(entt::registry* reg)
 	for (int x(0); x < EnemyList.size(); x++) {
 		if (DeleteCheck(EnemyList[x])) {
 			ContactList::RemoveFromList(EnemyList[x]);
-			if (ECS::GetComponent<AI>(EnemyList[x]).getAIType() == 1) {
+			if (ECS::GetComponent<AI>(EnemyList[x]).getAIType() == 1|| ECS::GetComponent<AI>(EnemyList[x]).getAIType() == 2) {
 				ECS::DestroyEntity(ECS::GetComponent<Barrel>(EnemyList[x]).getBarrelID());
 			}
 			ECS::DestroyEntity(EnemyList[x]);

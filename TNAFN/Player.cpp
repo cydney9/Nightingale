@@ -59,7 +59,7 @@ void Player::CreatePlayer(b2World& phyworld, int x, int y)
 	tempBody = phyworld.CreateBody(&tempDef);
 
 	tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth() - shrinkX), float(tempSpr.GetHeight()- shrinkY - 10),
-	vec2(0.f, -5.f), true, CollisionIDs::Player(), CollisionIDs::Enemy()| CollisionIDs::Enviroment()|CollisionIDs::EBullet());
+	vec2(0.f, -5.f), true, CollisionIDs::Player(), CollisionIDs::EBullet()|CollisionIDs::Enemy()| CollisionIDs::Enviroment());
 	tempPhsBody.SetFriction(0.15);
 
 	//fixture definition

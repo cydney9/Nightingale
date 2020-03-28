@@ -31,7 +31,7 @@ void Barrel::CreateBarrel(unsigned int entity, int x, int y, int z)
 	BarrelID = Bentity;
 }
 
-void Barrel::Update()
+void Barrel::Update(int AI)
 {
 	float x = ECS::GetComponent<Transform>(LinkedEntity).GetPosition().x;
 	float y = ECS::GetComponent<Transform>(LinkedEntity).GetPosition().y;
@@ -39,8 +39,7 @@ void Barrel::Update()
 
 	float PlayerX = ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()).GetPosition().x;
 	float PlayerY = ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()).GetPosition().y;
-
-	ECS::GetComponent<Transform>(BarrelID).SetPosition(vec3(x, y,z-1));
+	ECS::GetComponent<Transform>(BarrelID).SetPosition(vec3(x, y, z - 1));
 
 	float dx = x - PlayerX;
 	float dy = y - PlayerY;
@@ -48,23 +47,25 @@ void Barrel::Update()
 
 	playerDir = atan2(dy, dx);
 	playerDir = playerDir + Transform::ToRadians(180.f);
-	if (PlayerX> x) {
-		if (playerDir >=  0.5235987756 && playerDir <= 3.1415926536) {
-			playerDir = 0.5235987756;
+	if (AI == 1) {
+		if (PlayerX > x) {
+			if (playerDir >= 0.5235987756 && playerDir <= 3.1415926536) {
+				playerDir = 0.5235987756;
+			}
+			else if (playerDir >= 3.1415926536 && playerDir <= 5.7595865316) {
+				playerDir = 5.7595865316;
+			}
 		}
-		else if(playerDir >= 3.1415926536 && playerDir <= 5.7595865316){
-			playerDir = 5.7595865316;
-		}
-	}else if (PlayerX < x) {
+		else if (PlayerX < x) {
 
-		if (playerDir <= 2.617993878 && playerDir >= 0) {
-			playerDir = 2.617993878;
-		}
-		else if (playerDir >= 3.6651914292 && playerDir <= 6.2831853072)  {
-			playerDir = 3.6651914292;
+			if (playerDir <= 2.617993878 && playerDir >= 0) {
+				playerDir = 2.617993878;
+			}
+			else if (playerDir >= 3.6651914292 && playerDir <= 6.2831853072) {
+				playerDir = 3.6651914292;
+			}
 		}
 	}
-
 	ECS::GetComponent<Transform>(BarrelID).SetRotationAngleZ(playerDir);
 
 }

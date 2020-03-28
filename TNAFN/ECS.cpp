@@ -96,3 +96,14 @@ void ECS::SetIsBullet(unsigned entity, bool Bullet)
 	//Sets whether this entity is the Bullet
 	id.SetIsBullet(Bullet);
 }
+
+
+void ECS::SetIsEBullet(unsigned entity, bool Bullet)
+{
+	//Gets reference to the component
+	auto& id = GetComponent<EntityIdentifier>(entity);
+	//Sets Bullet entity
+	EntityIdentifier::EBullet(entity);
+	//Sets whether this entity is the Bullet
+	id.SetIsEBullet(Bullet);
+}

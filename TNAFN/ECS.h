@@ -56,6 +56,7 @@ public:
 	static void SetIsWeaponHand(unsigned entity, bool WeaponHand);
 	static void SetIsEnemy		(unsigned entity, bool Enemy);
 	static void SetIsBullet		(unsigned entity, bool Bullet);
+	static void SetIsEBullet	(unsigned entity, bool Bullet);
 private:
 	static entt::registry* m_reg;
 };

@@ -1,6 +1,9 @@
 #pragma once
 
 #include "JSON.h"
+
+static bool CanBeHitByBullet=true;
+
 class HealthBar
 {
 	friend class PlayerActionController;
@@ -16,13 +19,20 @@ public:
 
 	//Getters
 	float GetHealth() const;
-
+	bool GetCanBeHitByBullet();
 	//Setters
 	void SetHealth(float health);
 	void SetCanDamage(bool CanDam);
+	void SetCanBeHitByBullet(bool CanHit);
+
+	//Timer
+	void HitTimerUpdate();
 private:
 	//100%health
 	float m_health = 1.f;
+
+	float HitTimer = 0.1;
+	bool CanBeHitByBullet ;
 	bool CanDamage;
 };
 
