@@ -186,7 +186,6 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerActionController.cpp" />
     <ClCompile Include="PostEffect.cpp" />
-    <ClCompile Include="realBar.cpp" />
     <ClCompile Include="RenderingSystem.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneEditor.cpp" />
@@ -250,7 +249,6 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerActionController.h" />
     <ClInclude Include="PostEffect.h" />
-    <ClInclude Include="realBar.h" />
     <ClInclude Include="RenderingSystem.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneEditor.h" />
