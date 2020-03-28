@@ -88,16 +88,24 @@ void RenderingSystem::Update(entt::registry* reg)
 
 	Bullet::update(reg);
 	Enemy::update(reg);
-	//auto view3 = reg->view<HealthBar>();
+	auto view3 = reg->view<HealthBar>();
 
 	//loops through all entities within view3
-	//for (auto entity : view3) {
-		//auto& bar = view3.get(entity);
+	for (auto entity : view3) {
+		auto& bar = view3.get(entity);
 
 		//Displays current health with the entity number
 		//std::cout << "Entity Number " << std::to_string(entity) << " : ";
+		
 		//bar.DisplayHealth();
-	//}
+		bar.healthBarBase();
+		bar.ui1();
+		bar.ui2();
+		bar.ui3();
+		bar.powerCheck();
+		
+	}
+	
 }
 
 struct

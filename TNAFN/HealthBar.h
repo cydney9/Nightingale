@@ -1,6 +1,8 @@
 #pragma once
 
 #include "JSON.h"
+#include "ECS.h"
+#include "ContactList.h"
 class HealthBar
 {
 	friend class PlayerActionController;
@@ -11,17 +13,38 @@ public:
 	HealthBar(float health);
 	//Destorys the current health
 	void DisplayHealth();
+	static void createHB();
+	static void createUI1();
+	static void createUI2();
+	static void createUI3();
+	void healthBarBase();
+
+	//3am;
+	void ui1();
+	void ui2();
+	void ui3();
+	int getAmmo()const;
+	void checkAmmo();
+	void ammoDown();
+	void powerCheck();
+	float getPower();
+	void powerDown();
 
 	void Damage(float dam);
-
 	//Getters
 	float GetHealth() const;
-
+	
+	
 	//Setters
 	void SetHealth(float health);
 	void SetCanDamage(bool CanDam);
+
+	
 private:
 	//100%health
+	int ammo = 5;
+	unsigned int Lammo = 0;
+	 float power = 5.f;
 	float m_health = 1.f;
 	bool CanDamage;
 };

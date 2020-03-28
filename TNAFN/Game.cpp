@@ -7,6 +7,7 @@
 #include "GPCSound.h"
 #include "PlayerActionController.h"
 
+
 //value use for combo
 
 int ClickCounter = 0;
@@ -341,7 +342,10 @@ void Game::KeyboardDown()
 
 		}
 		else if (Input::GetKeyDown(Key::Space) && ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetIsGrounded() == false) {
-			IsFlying = true;
+			if(ECS::GetComponent<HealthBar>(EntityIdentifier::MainPlayer()).getPower() > 0.5)
+			{
+				IsFlying = true;
+			}
 		}
 		if (Input::GetKeyDown(Key::Shift)) {
 			PlayerActionController::Dash(LOR);

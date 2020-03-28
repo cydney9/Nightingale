@@ -6,6 +6,10 @@ unsigned int EntityIdentifier::m_WeaponHand = 0;
 unsigned int EntityIdentifier::m_Enemy      = 0;
 unsigned int EntityIdentifier::m_Bullet     = 0;
 unsigned int EntityIdentifier::m_Barrel		= 0;
+unsigned int EntityIdentifier::m_healthBar = 0;
+unsigned int EntityIdentifier::m_ui1 = 0;
+unsigned int EntityIdentifier::m_ui2 = 0;
+unsigned int EntityIdentifier::m_ui3 = 0;
 unsigned int EntityIdentifier::m_cameraBit			= 0x1;
 unsigned int EntityIdentifier::m_spriteBit			= 0x10;
 unsigned int EntityIdentifier::m_transformBit		= 0x100;
@@ -35,7 +39,23 @@ unsigned int EntityIdentifier::MainPlayer()
 	//Gets the main player entity number
 	return m_mainPlayer;
 }
-
+//uiBar
+unsigned int EntityIdentifier::healthBar()
+{
+	return m_healthBar;
+}
+unsigned int EntityIdentifier::ui1()
+{
+	return m_ui1;
+}
+unsigned int EntityIdentifier::ui2()
+{
+	return m_ui2;
+}
+unsigned int EntityIdentifier::ui3()
+{
+	return m_ui3;
+}
 
 bool EntityIdentifier::GetIsMainPlayer() const
 {
@@ -179,7 +199,27 @@ void EntityIdentifier::MainPlayer(unsigned int entity)
 	//Sets the main player entity
 	m_mainPlayer = entity;
 }
-
+//uiBar
+void EntityIdentifier::healthBar(unsigned int entity)
+{
+	//Sets the main player entity
+	m_healthBar = entity;
+}
+void EntityIdentifier::ui1(unsigned int entity)
+{
+	
+	m_ui1 = entity;
+}
+void EntityIdentifier::ui2(unsigned int entity)
+{
+	
+	m_ui2 = entity;
+}
+void EntityIdentifier::ui3(unsigned int entity)
+{
+	
+	m_ui3 = entity;
+}
 void EntityIdentifier::SetIsMainPlayer(bool main)
 {
 	//Sets whether or not the entity that has this component, is the main player

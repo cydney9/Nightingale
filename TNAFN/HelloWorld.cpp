@@ -4,7 +4,7 @@ b2Vec2 WallPos[] = { b2Vec2(-750, 330),
 b2Vec2(-360 , 329),
 b2Vec2(-330 , 360),
 b2Vec2(-180 , 360),
-b2Vec2(-120 , 420),
+b2Vec2(-120 , 420), //1
 b2Vec2(-0 , 420),
 b2Vec2(29,  390),
 b2Vec2(60,  390),
@@ -197,6 +197,11 @@ void HelloWorld::InitScene(float windowWidth, float windowHeight)
 		//unsigned int bitHolder = EntityIdentifier::HealthBarBit();
 		//ECS::SetUpIdentifier(entity, bitHolder, "HealthBar Entity");
 	//}
+	
+	HealthBar::createHB();
+	HealthBar::createUI1();
+	HealthBar::createUI2();
+	HealthBar::createUI3();
 
 //	Setup Player Entity
 	Player::CreatePlayer(*m_physicsWorld, -730, 350);
@@ -205,14 +210,15 @@ void HelloWorld::InitScene(float windowWidth, float windowHeight)
 	WeaponHand H(ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetPosition().x, ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetPosition().y, ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()).GetPosition().z - 1);
 
 	//	Setup Enemy Entity
-	Enemy::CreateEnemy(*m_physicsWorld, -700, 350, 1);
-
+	
 	Enemy::CreateEnemy(*m_physicsWorld, -630, 350, 0);
 
-
-
-
-
+	//FJ
+	Enemy::CreateEnemy(*m_physicsWorld, 200, 342, 1);
+	Enemy::CreateEnemy(*m_physicsWorld, 430, 435, 1);
+	Enemy::CreateEnemy(*m_physicsWorld, 503, -130, 0);
+	Enemy::CreateEnemy(*m_physicsWorld, 395, -137, 1);
+	//Enemy::CreateEnemy(*m_physicsWorld, 313, -15, 0);
 	//Set up ground
 	{
 		//Creates new entity
