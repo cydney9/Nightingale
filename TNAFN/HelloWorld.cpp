@@ -4,7 +4,7 @@ b2Vec2 WallPos[] = { b2Vec2(-750, 330),
 b2Vec2(-360 , 329),
 b2Vec2(-330 , 360),
 b2Vec2(-180 , 360),
-b2Vec2(-120 , 420),
+b2Vec2(-120 , 420), //1
 b2Vec2(-0 , 420),
 b2Vec2(29,  390),
 b2Vec2(60,  390),
@@ -197,6 +197,11 @@ void HelloWorld::InitScene(float windowWidth, float windowHeight)
 		//unsigned int bitHolder = EntityIdentifier::HealthBarBit();
 		//ECS::SetUpIdentifier(entity, bitHolder, "HealthBar Entity");
 	//}
+	
+	HealthBar::createHB();
+	HealthBar::createUI1();
+	HealthBar::createUI2();
+	HealthBar::createUI3();
 
 //	Setup Player Entity
 	Player::CreatePlayer(*m_physicsWorld, -730, 350);

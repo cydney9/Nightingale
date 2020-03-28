@@ -12,6 +12,10 @@ public:
 	//Getters
 	//Gets main player entity
 	static unsigned int MainPlayer();
+	static unsigned int healthBar();
+	static unsigned int ui1();
+	static unsigned int ui2();
+	static unsigned int ui3();
 	bool GetIsMainPlayer() const;
 
 	//gets WeaponHand
@@ -58,6 +62,11 @@ public:
 	//Setters
 	//Sets main player entity
 	static void MainPlayer(unsigned int entity);
+	//uiBar
+	static void healthBar(unsigned int entity);
+	static void ui1(unsigned int entity);
+	static void ui2(unsigned int entity);
+	static void ui3(unsigned int entity);
 	void SetIsMainPlayer(bool main);
 
 	//set WeaponHand
@@ -98,7 +107,11 @@ private:
 	//Main player
 	static unsigned int m_mainPlayer;
 	bool m_isMainPlayer = false;
-
+	//uiBar
+	static unsigned int m_healthBar;
+	static unsigned int m_ui1;
+	static unsigned int m_ui2;
+	static unsigned int m_ui3;
 	//Main camera
 	static unsigned int m_mainCamera;
 	bool m_isMainCamera = false;

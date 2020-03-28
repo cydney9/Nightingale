@@ -97,7 +97,17 @@ void RenderingSystem::Update(entt::registry* reg)
 
 		//Displays current health with the entity number
 		bar.HitTimerUpdate();
+		//std::cout << "Entity Number " << std::to_string(entity) << " : ";
+		
+		//bar.DisplayHealth();
+		bar.healthBarBase();
+		bar.ui1();
+		bar.ui2();
+		bar.ui3();
+		bar.powerCheck();
+		
 	}
+	
 }
 
 struct

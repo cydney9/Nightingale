@@ -1,5 +1,5 @@
 #include "PlayerActionController.h"
-
+#include "HealthBar.h"
 void PlayerActionController::walkLeft(b2Body* body, b2Vec2 vel, float desireVel, Sound2D* walk)
 {
 	desireVel = b2Min(vel.x - 0.2f, -10.f);
@@ -39,7 +39,7 @@ void PlayerActionController::Jump(b2Body* body)
 void PlayerActionController::FlyUp(b2Body* body)
 {
 	body->ApplyForce(b2Vec2(0, 90000), body->GetWorldCenter(), true);
-
+	ECS::GetComponent<HealthBar>(EntityIdentifier::MainPlayer()).powerDown();
 	if (body->GetLinearVelocity().y > 5) {
 		body->SetLinearVelocity(b2Vec2(body->GetLinearVelocity().x, 5));
 	}
@@ -48,7 +48,7 @@ void PlayerActionController::FlyUp(b2Body* body)
 void PlayerActionController::FlyDown(b2Body* body)
 {
 	body->ApplyForce(b2Vec2(0, -50000), body->GetWorldCenter(), true);
-
+	ECS::GetComponent<HealthBar>(EntityIdentifier::MainPlayer()).powerDown();
 	if (body->GetLinearVelocity().y < -5) {
 		body->SetLinearVelocity(b2Vec2(body->GetLinearVelocity().x, -5));
 	}
@@ -58,7 +58,7 @@ void PlayerActionController::FlyDown(b2Body* body)
 void PlayerActionController::FlyLeft(b2Body* body)
 {
 	body->ApplyForce(b2Vec2(-32000, 0), body->GetWorldCenter(), true);
-
+	ECS::GetComponent<HealthBar>(EntityIdentifier::MainPlayer()).powerDown();
 	if (body->GetLinearVelocity().x < -15) {
 		body->SetLinearVelocity(b2Vec2(-15, body->GetLinearVelocity().y));
 	}
@@ -67,22 +67,24 @@ void PlayerActionController::FlyLeft(b2Body* body)
 void PlayerActionController::FlyRight(b2Body* body)
 {
 	body->ApplyForce(b2Vec2(32000, 0), body->GetWorldCenter(), true);
-
+	ECS::GetComponent<HealthBar>(EntityIdentifier::MainPlayer()).powerDown();
 	if (body->GetLinearVelocity().x > 15) {
 		body->SetLinearVelocity(b2Vec2(15, body->GetLinearVelocity().y));
 	}
 }
 
-void PlayerActionController::Shoot(Scene* scene,float handangle)
+void PlayerActionController::Shoot(Scene* scene, float handangle)
 {
-	float WH_X = ECS::GetComponent<Transform>(EntityIdentifier::WeaponHand()).GetPositionX();
-	float WH_Y = ECS::GetComponent<Transform>(EntityIdentifier::WeaponHand()).GetPositionY();
-	float WH_angle = ECS::GetComponent<Transform>(EntityIdentifier::WeaponHand()).GetRotationAngleZ();
-
-	Bullet::CreateBullet(scene->GetPhysicsWorld(), WH_X + (10 * cos(handangle + Transform::ToRadians(180.f))), WH_Y + (10 * sin(handangle + Transform::ToRadians(180.f))), handangle + Transform::ToRadians(180.f),false);
-
-	ECS::GetComponent<HorizontalScroll>(EntityIdentifier::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()));
-	ECS::GetComponent<VerticalScroll>(EntityIdentifier::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()));
+	if (ECS::GetComponent<HealthBar>(EntityIdentifier::MainPlayer()).getAmmo() > 0)
+	{
+		ECS::GetComponent<HealthBar>(EntityIdentifier::MainPlayer()).ammoDown();
+		float WH_X = ECS::GetComponent<Transform>(EntityIdentifier::WeaponHand()).GetPositionX();
+		float WH_Y = ECS::GetComponent<Transform>(EntityIdentifier::WeaponHand()).GetPositionY();
+		float WH_angle = ECS::GetComponent<Transform>(EntityIdentifier::WeaponHand()).GetRotationAngleZ();
+		Bullet::CreateBullet(scene->GetPhysicsWorld(), WH_X + (10 * cos(handangle + Transform::ToRadians(180.f))), WH_Y + (10 * sin(handangle + Transform::ToRadians(180.f))), handangle + Transform::ToRadians(180.f), false);
+		ECS::GetComponent<HorizontalScroll>(EntityIdentifier::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()));
+		ECS::GetComponent<VerticalScroll>(EntityIdentifier::MainCamera()).SetFocus(&ECS::GetComponent<Transform>(EntityIdentifier::MainPlayer()));
+	}
 }
 
 float PlayerActionController::HandRotation(Scene* scene, SDL_MouseMotionEvent evnt)

@@ -114,6 +114,8 @@ void Enemy::RemoveFromEnemylist(unsigned int entity)
 bool Enemy::DeleteCheck(unsigned int entity)
 {
 	if (ECS::GetComponent<HealthBar>(entity).GetHealth() < 0) {
+		
+		ECS::GetComponent<HealthBar>(EntityIdentifier::MainPlayer()).checkAmmo();
 		return true;
 	}
 	else {
