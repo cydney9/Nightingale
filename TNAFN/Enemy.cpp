@@ -72,9 +72,9 @@ void Enemy::CreateEnemy(b2World& phyworld, int x, int y, int type)
 	tempPhsBody.SetFriction(0.15);
 
 
-
-	ECS::GetComponent<Barrel>(entity).CreateBarrel(entity,x,y, ECS::GetComponent<Transform>(entity).GetPositionZ()-1);
-
+	if (type != 0) {
+		ECS::GetComponent<Barrel>(entity).CreateBarrel(entity, x, y, ECS::GetComponent<Transform>(entity).GetPositionZ() - 1);
+	}
 	//fixture definition
 	b2PolygonShape polygonShape;
 	b2FixtureDef myFixtureDef;

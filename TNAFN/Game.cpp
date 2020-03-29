@@ -503,6 +503,8 @@ clickedPoint = clickedPoint + vec2(tempCam.GetPositionX(), tempCam.GetPositionY(
 void Game::MouseClick(SDL_MouseButtonEvent evnt)
 {
 	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT) && PlayerActionController::IsDash() == false) {
+		
+		cout <<"player's x: "<<ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetPosition().x << ", y:"<< ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetPosition().y<<endl;
 		PlayerActionController::Shoot(m_activeScene, handangle);
 		Camera tempCam = ECS::GetComponent<Camera>(EntityIdentifier::MainCamera());
 		vec2 windowSpace = vec2(float(BackEnd::GetWindowWidth()), float(BackEnd::GetWindowHeight()));

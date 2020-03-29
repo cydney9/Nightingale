@@ -55,12 +55,12 @@ void Bullet::CreateBullet(b2World& phyworld, float x, float y,float angle,bool E
 	if (Enemy) {
 		tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth()), float(tempSpr.GetHeight()),
 			vec2(0.f, 0.f), false, CollisionIDs::EBullet(), CollisionIDs::EBullet());
-		speed = 0;
+		speed = 10;
 	}
 	else {
 		tempPhsBody = PhysicsBody(tempBody, float(tempSpr.GetWidth()), float(tempSpr.GetHeight()),
 			vec2(0.f, 0.f), false, CollisionIDs::Bullet(), CollisionIDs::Bullet());
-		speed = 0;
+		speed = 20;
 	}
 	tempPhsBody.GetBody()->SetLinearVelocity(b2Vec2(speed * (cos(angle)), speed * sin(angle )));
 	tempPhsBody.GetBody()->SetTransform(tempPhsBody.GetBody()->GetPosition(), angle + Transform::ToRadians(180.f));
@@ -113,7 +113,12 @@ bool Bullet::DeleteCheck(unsigned int entity)
 void Bullet::update(entt::registry* reg)
 {
 	for (int x(0); x < Bulletlist.size(); x++) {
-		damage(Bulletlist[x]);
+		if (damage(Bulletlist[x])){
+			ContactList::RemoveFromList(Bulletlist[x]);
+			ECS::DestroyEntity(Bulletlist[x]);
+			Bulletlist.erase(Bulletlist.begin() + x, Bulletlist.begin() + x + 1);
+			continue;
+		}
 		if (DeleteCheck(Bulletlist[x])) {
 			ContactList::RemoveFromList(Bulletlist[x]);
 			ECS::DestroyEntity(Bulletlist[x]);
@@ -123,7 +128,7 @@ void Bullet::update(entt::registry* reg)
 	}
 }
 
-void Bullet::damage(unsigned int entity)
+bool Bullet::damage(unsigned int entity)
 {
 	auto body = ECS::GetComponent<PhysicsBody>(entity).GetBody();
 	float Angle = body->GetAngle();
@@ -140,7 +145,6 @@ void Bullet::damage(unsigned int entity)
 			}
 		}
 	}
-
 	if (IsEnemyBullet(entity) == true) {
 			auto PlayerBody = ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetBody();
 			float PlayerBodyX = PlayerBody->GetPosition().x;
@@ -151,8 +155,10 @@ void Bullet::damage(unsigned int entity)
 				PlayerHP.Damage(0.1f);
 				PlayerHP.SetCanBeHitByBullet(false);
 				cout << "is hitting" << endl;
+				return true;
 			}
 	}
+	return false;
 }
 
 bool Bullet::IsEnemyBullet(unsigned int entity)

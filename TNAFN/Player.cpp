@@ -69,7 +69,7 @@ void Player::CreatePlayer(b2World& phyworld, int x, int y)
 	myFixtureDef.density = 10;
 
 	//Adds a fixture the size of the body
-	polygonShape.SetAsBox(5.f, 1.f, b2Vec2(0.f, -14.5f), 0);
+	polygonShape.SetAsBox(5.f, 0.52+f, b2Vec2(0.f, -14.5f), 0);
 	myFixtureDef.isSensor = true;
 	b2Fixture* footSensorFixture = tempPhsBody.GetBody()->CreateFixture(&myFixtureDef);
 	footSensorFixture->SetUserData((void*)entity);

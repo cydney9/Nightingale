@@ -344,13 +344,32 @@ void PlayerActionController::Dash(int LOR)
 void PlayerActionController::DashUpdate(b2Body* body)
 {
 	if (DashTimer<0) {
+		ECS::GetComponent<HealthBar>(EntityIdentifier::MainPlayer()).SetCanDamage(true);
 		DashTimer = 0.28;
 		body->SetLinearVelocity(b2Vec2(3* Dashside, 0));
+		for (int x(0); x < Enemy::EnemyList.size(); x++) {
+			auto& EnemyHP = ECS::GetComponent<HealthBar>(Enemy::EnemyList[x]);
+			EnemyHP.SetCanDamage(true);
+		}
 		IsDashing = false;
 	}
 
 	if (IsDashing == true) {
+		ECS::GetComponent<HealthBar>(EntityIdentifier::MainPlayer()).SetCanDamage(false);
 		body->SetLinearVelocity(b2Vec2(50* Dashside, 0));
+		for (int x(0); x < Enemy::EnemyList.size(); x++) {
+			auto& EnemyphysicsBod = ECS::GetComponent<PhysicsBody>(Enemy::EnemyList[x]);
+			auto& EnemyHP = ECS::GetComponent<HealthBar>(Enemy::EnemyList[x]);
+			if (body->GetPosition().x - 17 < EnemyphysicsBod.GetBody()->GetPosition().x &&
+				EnemyphysicsBod.GetBody()->GetPosition().x  < body->GetPosition().x+17 &&
+				body->GetPosition().y + 15 > EnemyphysicsBod.GetBody()->GetPosition().y &&
+				EnemyphysicsBod.GetBody()->GetPosition().y > body->GetPosition().y - 15) {
+				EnemyHP.Damage(0.1f);
+				EnemyHP.SetCanDamage(false);
+			}
+		}
+
+
 		DashTimer -= Timer::deltaTime;
 	}
 	if (IsDashing == false && CanDash == false && DashCoolDown>0) {
