@@ -125,8 +125,11 @@ void HealthBar::checkAmmo()
 {
 	if (Lammo == 2)
 	{
-		ammo++;
-		Lammo = 0;
+		if (ammo != 5)
+		{
+			ammo++;
+			Lammo = 0;
+		}
 	}
 	else
 		Lammo++;
@@ -137,7 +140,13 @@ void HealthBar::ammoDown()
 	ammo--;
 
 }
-
+void HealthBar::DD()
+{
+	if (ECS::GetComponent<HealthBar>(EntityIdentifier::MainPlayer()).GetHealth() < 0.05)
+	{
+		exit(0);
+	}
+}
 void HealthBar::powerCheck()
 {
 	if (ECS::GetComponent<PhysicsBody>(EntityIdentifier::MainPlayer()).GetIsGrounded() == 1 && power < 5)

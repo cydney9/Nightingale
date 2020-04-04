@@ -105,7 +105,7 @@ void RenderingSystem::Update(entt::registry* reg)
 		bar.ui2();
 		bar.ui3();
 		bar.powerCheck();
-		
+		bar.DD();
 	}
 	
 }

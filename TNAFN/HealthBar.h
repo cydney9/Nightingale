@@ -27,6 +27,7 @@ public:
 	int getAmmo()const;
 	void checkAmmo();
 	void ammoDown();
+	void DD();
 	void powerCheck();
 	float getPower();
 	void powerDown();
